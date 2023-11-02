@@ -1,7 +1,6 @@
-import '@/styles/content.scss'
 import ContentBody from '@/components/content/Content'
 import { notFound, redirect } from 'next/navigation'
-import type { Content } from 'types/api'
+import type { Content } from '@/models/content'
 
 async function getContent(name: string) {
     return await fetch(process.env.API_URL + `/api/contents?subject=sociologia&name=${name}`)

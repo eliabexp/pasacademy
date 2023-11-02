@@ -3,9 +3,10 @@ import Logo from '@/components/main/Logo'
 import Script from 'next/script'
 import { getServerSession } from 'next-auth/next'
 import { redirect } from 'next/navigation'
+import { authOptions } from './api/auth/[...nextauth]/route'
 
 export default async function Home() {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if(session) redirect('/inicio')
 
     return (
@@ -22,13 +23,14 @@ export default async function Home() {
                     <button id="enter">Acessar gratuitamente</button>
                 </div>
                 <picture>
-                    <img src="/assets/images/white.jpg" alt="Print da plataforma" draggable="false"/>
+                    <source media="(prefers-color-scheme: dark)" srcSet="/assets/images/platform-dark.jpg"/>
+                    <img src="/assets/images/platform.jpg" alt="Print da interface da plataforma" draggable="false"/>
                 </picture>
             </section>
             <section className="features">
                 <picture>
-                    <source media="(max-width=768px)" srcSet="/assets/images/white.jpg"/>
-                    <img src="/assets/images/white.jpg" alt="Imagem da tela de questões" draggable="false"/>
+                    <source media="(prefers-color-scheme: dark)" srcSet="/assets/images/questions-dark.jpg"/>
+                    <img src="/assets/images/questions.jpg" alt="Imagem da tela de questões" draggable="false"/>
                 </picture>
                 <div className="text">
                     <h2>Seu caminho para a aprovação começa aqui</h2>
@@ -37,8 +39,8 @@ export default async function Home() {
             </section>
             <section className="features">
                 <picture>
-                    <source media="(max-width=768px)" srcSet="/assets/images/white.jpg"/>
-                    <img src="/assets/images/white.jpg" alt="Imagem da tela de Conteúdos" draggable="false"/>
+                    <source media="(prefers-color-scheme: dark)" srcSet="/assets/images/content-dark.jpg"/>
+                    <img src="/assets/images/content.jpg" alt="Imagem da tela de Conteúdos" draggable="false"/>
                 </picture>
                 <div className="text">
                     <h2>Não perca mais tempo procurando o que estudar</h2>
@@ -47,7 +49,8 @@ export default async function Home() {
             </section>
             <section className="features">
                 <picture>
-                    <img src="/assets/images/white.jpg" alt="Demonstração da tela de trilhas" draggable="false"/>
+                    <source media="(prefers-color-scheme: dark)" srcSet="/assets/images/roads-dark.jpg"/>
+                    <img src="/assets/images/roads.jpg" alt="Demonstração da tela de trilhas" draggable="false"/>
                 </picture>
                 <div className="text">
                     <h2>Conheça a sua melhor versão de estudante</h2>
@@ -71,7 +74,7 @@ export default async function Home() {
                 </div>
                 <div>
                     <h3>Contato</h3>
-                    <a href="mailto:contato@pas.academy" target="_blank" rel="external">E-mail</a>
+                    <a href="mailto:contato@pasacademy.com.br" target="_blank" rel="external">E-mail</a>
                 </div>
                 <div>
                     <h3>Dados</h3>

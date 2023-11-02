@@ -5,7 +5,6 @@ export default function Obras() {
     return (
         <>
         <header>
-            <Logo/>
             <Search subject='obras'/>
         </header>
         <main>

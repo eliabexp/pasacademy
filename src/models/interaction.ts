@@ -1,4 +1,6 @@
-export default models.interactions || model('interactions', new Schema({
+import { model, models, InferSchemaType, Schema } from 'mongoose'
+
+const schema = new Schema({
     id: { type: String, required: true, unique: true },
     type: { type: String, enum: ['content', 'question'], required: true },
     comments: [{
@@ -33,4 +35,7 @@ export default models.interactions || model('interactions', new Schema({
             timeElapsed: { type: Number, required: true }
         }]
     }
-}))
+})
+
+export type Interactions = InferSchemaType<typeof schema>
+export default models.interaction || model('interaction', schema)

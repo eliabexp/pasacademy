@@ -1,16 +1,15 @@
-import type { DefaultSession } from 'next-auth'
+import type { DefaultSession, DefaultUser } from 'next-auth'
+import type { User as ModelUser } from '@/models/user'
 
 declare module 'next-auth' {
+    interface User extends DefaultUser, ModelUser {}
+
     interface Session {
         user: {
             id: string
-            avatar: string
-            role: string
-            permissions: string[]
-            plusSubscription: {
-                active: boolean
-                expiresAt: Date
-            }
-        } & DefaultSession['user']
+            email: string
+            name: string
+            pronoun: string
+        }
     }
 }

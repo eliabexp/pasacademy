@@ -1,6 +1,6 @@
-import { model, models, Schema } from 'mongoose'
+import { model, models, InferSchemaType, Schema } from 'mongoose'
 
-export default models.trail || model('trail', new Schema({
+const schema = new Schema({
     id: { type: String, required: true },
     name: { type: String, required: true },
     level: { type: Number, min: 1, max: 3, required: true },
@@ -8,4 +8,7 @@ export default models.trail || model('trail', new Schema({
     contents: [{
         id: { type: String, required: true },
     }],
-}))
+})
+
+export type Road = InferSchemaType<typeof schema>
+export default models.road || model('road', schema)

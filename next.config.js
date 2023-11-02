@@ -4,7 +4,7 @@ const nextConfig = {
             { key: 'Content-Security-Policy', value: 'default-src \'self\'; img-src *; font-src *; script-src \'self\' \'unsafe-inline\' \'unsafe-eval\'; style-src *' },
             { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
             { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-            { key: 'X-Powered-By', value: 'pas.academy' }
+            { key: 'X-Powered-By', value: 'PAS Academy' }
         ]
 
         return [{ 
@@ -21,7 +21,7 @@ const nextConfig = {
             },
             {
                 source: '/:path(twitter|x)',
-                destination: 'https://twitter.com/pas.academy',
+                destination: 'https://twitter.com/pasacademy.com.br',
                 permanent: false
             }
         ]

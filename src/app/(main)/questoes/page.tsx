@@ -4,7 +4,7 @@ export default function Questoes() {
     return (
         <>
         <header>
-            <Logo/>
+            
         </header>
         <main>
             

@@ -1,6 +1,6 @@
-import { model, models, Schema } from 'mongoose'
+import { model, models, InferSchemaType, Schema } from 'mongoose'
 
-const subjectsId = {
+const subjectsId: { [key: string]: number } = {
     'portugues': 10,
     'geografia': 11,
     'historia': 12,
@@ -19,7 +19,16 @@ const subjectsId = {
 }
 const subjects = Object.keys(subjectsId)
 
-export default models.question || model('question', new Schema({
+const contentSchema = new Schema({
+    question: { type: String, required: true },
+    alternatives: [{
+        text: { type: String, required: true },
+        isCorrect: { type: Boolean, required: true },
+        explanation: { type: String }
+    }]
+})
+
+const schema = new Schema({
     id: { type: String, required: true, unique: true },
     subject: { type: String, enum: subjects, required: true },
     level: { type: Number, required: true },
@@ -29,21 +38,18 @@ export default models.question || model('question', new Schema({
     number: { type: Number }, 
     type: { type: String, enum: ['a', 'b', 'c', 'd'], required: true },
     contents: [{ type: String }],
-    content: {
-        question: { type: String, required: true },
-        alternatives: [{
-            text: { type: String, required: true },
-            isCorrect: { type: Boolean, required: true },
-            explanation: { type: String },
-        }],
-    }
+    content: { type: contentSchema, required: true }
 })
-.pre('validate', function(next) {
+.pre('validate', async function(this: any, next) {
     if(this.isNew) {
-        // Generate id
+        // Generate question id
         const { year, level, difficulty, number } = this
-        this.id = subjectsId[this.subject] + this.level + String(year).slice(-2) + this.difficulty + this.number
+        const subjectId = subjectsId[this.subject]
+        this.id = subjectId + level + String(year).slice(-2) + difficulty + number
     }
 
     next()
-}))
+})
+
+export type Question = InferSchemaType<typeof schema>
+export default models.question || model('question', schema)

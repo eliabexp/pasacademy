@@ -1,15 +1,12 @@
-'use client'
-
-import '@/styles/inicio.scss'
-import ContentRow from '@/components/main/ContentRow'
 import Logo from '@/components/main/Logo'
 import Search from '@/components/main/Search'
+import Welcome from '@/components/main/Welcome'
 
-export default function Inicio() {
+export default async function Inicio() {
     return (
         <>
         <header>
-            <Logo/>
+            <Welcome/>
             <Search/>
         </header>
         <main>

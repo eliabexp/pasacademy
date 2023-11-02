@@ -1,3 +1,4 @@
+import '@/styles/main.scss'
 import Nav from '@/components/main/Nav'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {

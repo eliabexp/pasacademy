@@ -1,6 +1,8 @@
-import '@/styles/globals.scss'
+import '@/styles/global.scss'
+import AuthProvider from '@/components/plugins/AuthProvider'
 import { Inter } from 'next/font/google'
-import AuthProvider from '@/components/AuthProvider'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from './api/auth/[...nextauth]/route'
 import type { Metadata } from 'next'
 
 // Fonts
@@ -14,11 +16,13 @@ export const metadata: Metadata = {
     description: 'Uma plataforma completa sobre o PAS UnB.'
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+    const session = await getServerSession(authOptions)
+
     return (
         <html lang="pt-br">
             <body className={inter.className}>
-                <AuthProvider>
+                <AuthProvider session={session}>
                     {children}
                 </AuthProvider>
             </body>

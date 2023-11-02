@@ -1,10 +1,9 @@
 import type { NextRequest } from 'next/server'
-import type { Content } from 'types/api'
 import { NextResponse } from 'next/server'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
 import startDB from '@/lib/mongoose'
-import contents from '@/models/content.js'
+import contents, { type Content } from '@/models/content'
 
 interface ContentQuery {
     id?: string
@@ -15,7 +14,7 @@ interface ContentQuery {
 async function getContent(query: ContentQuery) {
     await startDB()
 
-    const data: Content | null = await contents.findOne(query).select({ _id: 0, __v: 0 }).lean()
+    const data: Content | null = await contents.findOne(query).select({ _id: 0 }).lean()
 
     return data
 }
@@ -25,27 +24,29 @@ async function getContents(query: ContentQuery) {
 
     // Search
     if(query.name) {
-        const search = {
+        const data = await contents.aggregate()
+        .search({
             index: 'contents',
-            text: {
+            autocomplete: {
                 query: query.name,
-                path: {
-                    wildcard: '*'
-                }
+                path: 'title'
             }
-        }
-        const data = await contents.aggregate().search(search)
+        })
+        .match({ subject: query.subject, status: 'published' })
+        .limit(8)
+        .project({ title: 1, subject: 1, subjectTitle: 1, name: 1, id: 1, _id: 0 })
+        
 
         return data
     }
 
-    const data: Content[] | null = await contents.find(query).select({ _id: 0, __v: 0 }).lean()
+    const data: Content[] | null = await contents.find(query).select({ _id: 0 }).lean()
 
     return data
 }
 
 export async function GET(req: NextRequest) {
-    const params = new URL(req.url as string).searchParams
+    const params = req.nextUrl.searchParams
     const query = {
         id: params.get('id') ? params.get('id')?.slice(0, 8) : undefined,
         subject: params.get('subject') ? params.get('subject')?.toLowerCase() : undefined,

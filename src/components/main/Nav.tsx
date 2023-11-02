@@ -2,6 +2,7 @@
 
 import styles from './styles/Nav.module.scss'
 import Link from 'next/link'
+import Logo from '@/components/main/Logo'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
@@ -45,14 +46,16 @@ export default function Nav() {
 
     // Set active link
     const pathName = usePathname().split('/')[1]
-    const [page, setPage] = useState(pathName)
+    const [page, setPage] = useState('')
     useEffect(() => {
         if(linksArray.includes(pathName)) setPage(pathName)
+        else if(!page) setPage('inicio')
     }, [pathName])
 
     return (
         <nav className={styles.nav}>
-            <menu>
+            <Logo/>
+            <menu id={styles.mainMenu}>
             {
                 linksArray.map((key: string) => {
                     const link = links[key]

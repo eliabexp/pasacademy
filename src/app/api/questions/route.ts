@@ -1,10 +1,9 @@
 import type { NextRequest } from 'next/server'
-import type { Question } from 'types/api'
 import { NextResponse } from 'next/server'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
 import startDB from '@/lib/mongoose'
-import questions from '@/models/question.js'
+import questions, { type Question } from '@/models/question'
 
 interface QuestionQuery {
     id?: string
@@ -26,7 +25,7 @@ async function getQuestions(query: QuestionQuery) {
 }
 
 export async function GET(req: NextRequest) {
-    const params = new URL(req.url as string).searchParams
+    const params = req.nextUrl.searchParams
 
     notFound()
 }

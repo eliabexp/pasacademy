@@ -23,7 +23,7 @@ header {
     display: flex;
     height: 60px;
     justify-content: space-between;
-    padding: 25px;
+    padding: 24px;
 }
 section {
     overflow: hidden;
@@ -40,7 +40,7 @@ section {
     &#main {
         padding: max(10vh, 24px) 24px;
         position: relative;
-        min-height: 95svh;
+        min-height: calc(100svh - 60px);
 
         h1 {
             font-size: 2.5rem;
@@ -130,8 +130,10 @@ footer {
             margin: 12px;
         }
     }
-    #footer-container {
-        flex-direction: column;
+    footer {
+        #footer-container {
+            flex-direction: column;
+        }
     }
 }
 @media screen and (min-width: 768px) {
@@ -171,7 +173,9 @@ footer {
             }
         }
     }
-    #footer-container {
-        margin: 120px 0px;
+    footer {
+        #footer-container {
+            margin: 120px 0px;
+        }
     }
 }
