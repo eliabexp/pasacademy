@@ -17,28 +17,55 @@ const subjectsId: { [key: string]: number } = {
     'biologia': 23,
     'obras': 30,
 }
-const subjects = Object.keys(subjectsId)
-
-const contentSchema = new Schema({
-    question: { type: String, required: true },
-    alternatives: [{
-        text: { type: String, required: true },
-        isCorrect: { type: Boolean, required: true },
-        explanation: { type: String }
-    }]
-})
 
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
-    subject: { type: String, enum: subjects, required: true },
+    subjects: [{ type: String, enum: Object.keys(subjectsId), required: true }],
     level: { type: Number, required: true },
     year: { type: Number, required: true },
     difficulty: { type: Number, min: 1, max: 3 },
     institution: { type: String, required: true },
-    number: { type: Number }, 
+    number: { type: Number },
     type: { type: String, enum: ['a', 'b', 'c', 'd'], required: true },
-    contents: [{ type: String }],
-    content: { type: contentSchema, required: true }
+    tags: [{ type: String }],
+    content: {
+        question: { type: String, required: true },
+        alternatives: [{
+            text: { type: String, required: true },
+            isCorrect: { type: Boolean, required: true },
+            explanation: { type: String }
+        }]
+    },
+    interactions: {
+        answers: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+            answer: { type: String, required: true },
+            timeElapsed: { type: Number, required: true }
+        }],
+        comments: [{
+            userId: { type: String, required: true },
+            comment: { type: String, required: true },
+            date: { type: Date, required: true },
+            id: { type: String, required: true }
+        }],
+        likes: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true, unique: true },
+        }],
+        shares: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+        }],
+        skips: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+        }],
+        views: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+        }]
+    }
 })
 .pre('validate', async function(this: any, next) {
     if(this.isNew) {

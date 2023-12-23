@@ -1,9 +1,8 @@
 import { model, models, InferSchemaType, Schema } from 'mongoose'
 
 const accountSchema = new Schema({
-    email: { type: String, lowercase: true, minlength: 6, maxlength: 254, required: true, unique: true },
     permissions: [{ type: String, enum: ['contentCreator', 'contentModerator', 'communityModerator', 'userModerator', 'admin']}],
-    plusSubscription: { 
+    plusSubscription: {
         active: { type: Boolean, default: false },
         expiresAt: { type: Date },
         paymentHistory: [{
@@ -26,11 +25,24 @@ const profileSchema = new Schema({
 })
 const studySchema = new Schema({
     contents: {
-        viewed: [{
-            id: { type: String, required: true },
-            times: [{ type: Date, default: Date.now() }],
+        drafts: [{
+            subject: { type: String, required: true },
+            level: { type: Number, min: 1, max: 3, required: true },
+            title: { type: String, required: true },
+            content: { type: String, required: true },
+            exercises: [{
+                question: { type: String, required: true },
+                image: { type: String },
+                type: { type: String, enum: ['a', 'b', 'c'], required: true },
+                alternatives: [{
+                    text: { type: String, required: true },
+                    isCorrect: { type: Boolean, required: true },
+                    explanation: { type: String }
+                }],
+                difficulty: { type: Number, min: 1, max: 3 }
+            }]
         }],
-        saved: [{ id: { type: String, required: true } }],
+        saved: [{ id: { type: String, required: true } }]
     },
     questions: {
         done: [{
@@ -43,6 +55,7 @@ const studySchema = new Schema({
 
 const schema = new Schema({
     id: { type: String, required: true, index: true, unique: true, immutable: true },
+    email: { type: String, lowercase: true, minlength: 6, maxlength: 254, required: true, unique: true },
     account: { type: accountSchema, required: true },
     profile: { type: profileSchema, required: true },
     study: { type: studySchema }

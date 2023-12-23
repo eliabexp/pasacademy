@@ -1,8 +1,12 @@
 import { connect, connection } from 'mongoose'
 
-export default async function startDB() {
-    if(connection.readyState === 1) return
+export default async function startDB(database = 'platformDB') {
+    database = 'platformDB'
 
-    await connect(process.env.MONGODB_URI, { ignoreUndefined: true })
-    .then(() => console.log('Connected to MongoDB'))
+    if(connection.readyState === 1) {
+        return
+    }
+
+    await connect(process.env.MONGODB_URI, { ignoreUndefined: true, dbName: database })
+        .then(() => console.log('Connected to MongoDB'))
 }

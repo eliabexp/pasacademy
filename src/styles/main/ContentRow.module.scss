@@ -1,0 +1,38 @@
+.section {
+    margin: 16px 0px;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    list-style-type: none;
+    margin: 8px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+.item {
+    button {
+        background-color: transparent;
+        border: none;
+        font-size: 0.95rem;
+        padding: 4px;
+        transition: transform .2s ease-in;
+        text-align: center;
+        width: 248px;
+
+        &:hover {
+            outline: none;
+            transform: scale(1.02);
+        }
+    }
+    img {
+        border-radius: 16px;
+        margin-bottom: 4px;
+        width: 240px;
+    }
+}

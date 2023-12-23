@@ -1,12 +1,11 @@
 import '@/styles/main.scss'
-import Logo from '@/components/main/Logo'
-import Nav from '@/components/main/Nav'
+import Nav from '@/layouts/Nav'
 
 export default function ContentLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-        {children}
-        <Nav/>
+            {children}
+            <Nav />
         </>
     )
 }

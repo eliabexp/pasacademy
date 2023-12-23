@@ -10,19 +10,18 @@ const subjectsId: { [key: string]: number } = {
     'ingles': 16,
     'espanhol': 17,
     'frances': 18,
-    'educacaofisica': 19,
+    'literatura': 19,
     'matematica': 20,
     'fisica': 21,
     'quimica': 22,
     'biologia': 23,
     'obras': 30,
 }
-const subjects = Object.keys(subjectsId)
 
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, lowercase: true, required: true, index: true },
-    subject: { type: String, enum: subjects, required: true },
+    subject: { type: String, enum: Object.keys(subjectsId), required: true },
     subjectTitle: { type: String, required: true },
     level: { type: Number, min: 1, max: 3, required: true },
     weight: { type: Number, min: 0, max: 100 },
@@ -30,6 +29,8 @@ const schema = new Schema({
     author: { type: String, default: 'PAS Academy' },
     thumb: { type: String },
     title: { type: String, required: true },
+    status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+    tags: [{ type: String }],
     content: { type: String, required: true },
     exercises: [{
         question: { type: String, required: true },
@@ -40,15 +41,34 @@ const schema = new Schema({
             isCorrect: { type: Boolean, required: true },
             explanation: { type: String }
         }],
-        difficulty: { type: Number, min: 1, max: 3 },
+        difficulty: { type: Number, min: 1, max: 3 }
     }],
-    status: { type: String, enum: ['draft', 'published'], default: 'draft' },
-    tags: [{ type: String }]
+    interactions: {
+        comments: [{
+            userId: { type: String, required: true },
+            comment: { type: String, required: true },
+            date: { type: Date, required: true },
+            id: { type: String, required: true }
+        }],
+        likes: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true, unique: true },
+        }],
+        shares: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+        }],
+        views: [{
+            date: { type: Date, required: true },
+            userId: { type: String, required: true },
+        }]
+    }
 })
 .pre('validate', async function(this: any, next) {
     if(this.isNew) {
         // Generate content id
         const subjectId = subjectsId[this.subject]
+
         do {
             this.id = subjectId + this.level + String(Math.floor(Math.random() * 100000)).padStart(5, '0')
         }

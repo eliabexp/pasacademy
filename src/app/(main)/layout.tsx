@@ -1,11 +1,11 @@
 import '@/styles/main.scss'
-import Nav from '@/components/main/Nav'
+import Nav from '@/layouts/Nav'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-        {children}
-        <Nav/>
+            {children}
+            <Nav />
         </>
     )
 }

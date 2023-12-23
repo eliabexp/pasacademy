@@ -3,30 +3,43 @@
     --primary: #1912a1;
     --secondary: #cadbeb;
     --accent: #2218d8;
-    --text: #000;
-    --text-inverted: #fff;
     --box: #d1d1d1;
     --hover: #e6e6e6;
     --shadow4: rgba(0, 0, 0, 0.4);
-}
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #060707;
-        --primary: #fff;
-        --secondary: #000;
-        --text: #fff;
-        --text-inverted: #000;
+
+    --text: #000;
+    --text-inverted: #fff;
+    --text-gray: #808080;
+
+    --button-solid: #ededed;
+    --button-solid-hover: #ccc;
+    --button-soft: #0a0a0a;
+    --button-soft-hover: #1f1f1f;
+
+    &[data-theme="dark"] {
+        --background: #0a0c0c;
         --box: #262a2b;
         --hover: #333;
         --shadow4: rgba(255, 255, 255, 0.4);
-    }
+        --filter-invert: invert(1);
+        
+        --text: #fff;
+        --text-inverted: #000;
 
-    ::-webkit-scrollbar {
-        background-color: #202324;
+        --button-solid: #ededed;
+        --button-solid-hover: #ccc;
+        --button-soft: #0a0a0a;
+        --button-soft-hover: #1f1f1f;
     }
-    ::-webkit-scrollbar-thumb {
-        background-color: #454a4d;
-    }
+}
+::-webkit-scrollbar {
+    background-color: var(--background);
+    width: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--text);
+    border: 4px solid var(--background);
+    border-radius: 12px;
 }
 
 * {
@@ -41,6 +54,11 @@ html {
 body {
     background-color: var(--background);
     color: var(--text);
+}
+button {
+    background-color: transparent;
+    border: none;
+    color: inherit;
 }
 menu {
     list-style-type: none;

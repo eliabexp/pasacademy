@@ -1,6 +1,6 @@
 'use client'
 
-import styles from './styles/Search.module.scss'
+import styles from '@/styles/main/Search.module.scss'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
@@ -15,7 +15,7 @@ interface Result {
 export default function Search({ subject }: { subject?: string }) {
     let placeholder
     switch(subject) {
-        case 'obras': 
+        case 'obras':
             placeholder = 'Pesquisar obras'
             break
         default:
@@ -47,25 +47,24 @@ export default function Search({ subject }: { subject?: string }) {
     }, [search])
 
     return (
-        <div className={styles.searchContainer}>
-        <input className={styles.input} type="search" name="search" placeholder={placeholder} minLength={2} maxLength={48} autoComplete="off" onChange={(e) => setSearch(e.target.value)}/>
-        {
-            results.length > 0 &&
-            <menu className={styles.results}>
-                {
-                    results.map(({ id, subject, subjectTitle, name, title }: Result) => {
-                        return (
-                            <li key={id}>
-                                <Link href={`/${subject}/${name}`}>
-                                    <h3 className={styles.name}>{title}</h3>
-                                    <span className={styles.subject}>{subjectTitle}</span>
-                                </Link>
-                            </li>
-                        )
-                    })
-                }
-            </menu>
-        }
+        <div className={styles.container}>
+            <input className={styles.input} type="search" name="search" placeholder={placeholder} minLength={2} maxLength={48} autoComplete="off" onChange={(e) => setSearch(e.target.value)} />
+            {results.length > 0 && (
+                <menu className={styles.results}>
+                    {
+                        results.map(({ id, subject, subjectTitle, name, title }: Result) => {
+                            return (
+                                <li key={id}>
+                                    <Link href={`/${subject}/${name}`}>
+                                        <h3 className={styles.name}>{title}</h3>
+                                        <span className={styles.subject}>{subjectTitle}</span>
+                                    </Link>
+                                </li>
+                            )
+                        })
+                    }
+                </menu>
+            )}
         </div>
     )
 }

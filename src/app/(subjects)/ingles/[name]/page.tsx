@@ -4,7 +4,7 @@ import type { Content } from '@/models/content'
 
 async function getContent(name: string) {
     return await fetch(process.env.API_URL + `/api/contents?subject=ingles&name=${name}`)
-    .then(res => {
+    .then((res) => {
         switch(res.status) {
             case 404: notFound()
             case 401: redirect('/login')
@@ -26,7 +26,7 @@ export default async function Content({ params }: { params: { name: string } }) 
 
     return (
         <main>
-            <ContentBody data={data}/>
+            <ContentBody data={data} />
         </main>
     )
 }

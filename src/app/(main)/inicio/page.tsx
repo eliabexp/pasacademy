@@ -1,17 +1,18 @@
-import Logo from '@/components/main/Logo'
+import ContentRow from '@/components/main/ContentRow'
+import Button from '@/components/ui/Button'
 import Search from '@/components/main/Search'
-import Welcome from '@/components/main/Welcome'
 
 export default async function Inicio() {
+    const topics = await fetch(process.env.API_URL + '/api/topics', { cache: 'no-cache' }).then((res) => res.json())
+
     return (
         <>
-        <header>
-            <Welcome/>
-            <Search/>
-        </header>
-        <main>
-            
-        </main>
+            <header>
+                <Search />
+            </header>
+            <main>
+                
+            </main>
         </>
     )
 }
