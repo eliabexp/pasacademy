@@ -1,4 +1,3 @@
-import '@/styles/main.scss'
 import Link from 'next/link'
 
 export const metadata = {
@@ -9,10 +8,12 @@ export const metadata = {
 
 export default function NotFound() {
     return (
-        <main className="not-found">
+        <main>
             <h1>404</h1>
             <p>Oops, acho que você se perdeu</p>
-            <p>Que tal voltarmos para a <Link href="/">Página inicial</Link>?</p>
+            <p>
+                Que tal voltarmos para a <Link href="/">Página inicial</Link>?
+            </p>
         </main>
     )
 }

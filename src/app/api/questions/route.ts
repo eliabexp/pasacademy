@@ -1,5 +1,4 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
 import startDB from '@/lib/mongoose'
@@ -7,8 +6,8 @@ import questions from '@/models/question'
 
 interface Query {
     id?: string
-    subject?: string, 
-    name?: string, 
+    subject?: string
+    name?: string
 }
 
 async function getQuestion(query: Query) {
@@ -21,7 +20,6 @@ async function getQuestion(query: Query) {
 
 async function getQuestions(query: Query) {
     await startDB()
-
 }
 
 export async function GET(req: NextRequest) {
@@ -34,10 +32,7 @@ export async function GET(req: NextRequest) {
 
     try {
         const query = schema.parse(Object.fromEntries(params.entries()))
-
-        
-    }
-    catch {
+    } catch {
         return NextResponse.json({ error: 'Bad Request' }, { status: 400 })
     }
 

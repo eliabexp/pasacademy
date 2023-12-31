@@ -1,12 +1,13 @@
 'use client'
 
-import { SessionProvider } from 'next-auth/react'
-import type { Session } from 'next-auth'
+import { createContext } from 'react'
+export const AuthContext = createContext(null as any)
 
-export default function AuthProvider({ children, session }: { children: React.ReactNode, session: Session | null }) {
-    return (
-        <SessionProvider session={session} refetchInterval={60}>
-            {children}
-        </SessionProvider>
-    )
+interface AuthProviderProps {
+    user: any | false | null
+    children: React.ReactNode
+}
+
+export default function AuthProvider({ user, children }: AuthProviderProps) {
+    return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
 }

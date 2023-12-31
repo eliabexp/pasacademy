@@ -1,18 +1,19 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { notFound } from 'next/navigation'
+import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
-import { auth } from '@/auth'
+import auth from '@/lib/auth'
 import startDB from '@/lib/mongoose'
 import topics from '@/models/topic'
-import users from '@/models/user'
 
-interface contentRow {
+interface ContentRow {
     name: string
-    contents: Promise<any>
+    contents: string[]
+    subjects: string[]
+    level: number
+    sort: 'new' | 'view'
 }
-interface mainCarousel {
+interface Slider {
     name: string
+    description: string
     image: string
     url: string
 }
@@ -20,47 +21,51 @@ interface mainCarousel {
 export async function GET(req: NextRequest) {
     await startDB('platformDB')
 
-    const session = await auth()
-    const user = await users.findOne({ email: session?.user?.email })
+    const user = await auth()
 
-    const contentRows: contentRow[] = []
-    const mainCarousel: mainCarousel[] = []
+    const contentRows: ContentRow[] = []
+    const slider: Slider[] = []
 
-    const topicsArray = (await topics.find({}).select({ _id: 0 }).lean())
-    .filter((topic) => {
-        if(user) {
-            if(topic.level && user.profile.level !== topic.level) return false // Level filter
-        }
-        else if(topic.authRequired) {
-            return false
-        }
-
-        return true
-    })
-    .sort((a, b) => b.priority - a.priority)
-    .map((topic) => {
-        switch(topic.type) {
-            case 'contentRow': {
-                contentRows.push({
-                    name: topic.name,
-                    contents: topic.contents
-                })
-                break
+    const topicsArray = await topics.find({}).select({ _id: 0 }).lean()
+    topicsArray
+        .filter((topic) => {
+            if (user) {
+                if (topic.authRequired === false) return false 
+                if (topic.level && user.level !== topic.level) return false // Level filter
+            } else if (topic.authRequired) {
+                return false
             }
-            case 'mainCarousel': {
-                mainCarousel.push({
-                    name: topic.name,
-                    image: topic.image,
-                    url: topic.url
-                })
-                break
+
+            return true
+        })
+        .sort((a, b) => b.priority - a.priority)
+        .map((topic) => {
+            switch (topic.type) {
+                case 'contentRow': {
+                    contentRows.push({
+                        name: topic.name,
+                        contents: topic.contents,
+                        subjects: topic.subjects,
+                        level: topic.level,
+                        sort: topic.sort
+                    })
+                    break
+                }
+                case 'slider': {
+                    slider.push({
+                        name: topic.name,
+                        description: topic.description,
+                        image: topic.image,
+                        url: topic.url
+                    })
+                    break
+                }
             }
-        }
-    })
+        })
 
     const data = {
-        contentRows,
-        mainCarousel
+        slider,
+        contentRows
     }
 
     return NextResponse.json(data)

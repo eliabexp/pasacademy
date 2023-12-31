@@ -1,92 +1,83 @@
-'use client'
+import Login from '@/layouts/Login'
+import Logo from '@/components/ui/Logo'
+import auth from '@/lib/auth'
+import { WorkOS } from '@workos-inc/node'
+import { redirect } from 'next/navigation'
 
-import '@/styles/page.scss'
-import Image from 'next/image'
-import Logo from '@/components/main/Logo'
-import { useEffect, useState } from 'react'
-import { useSession, signIn } from 'next-auth/react'
-import { redirect, useSearchParams } from 'next/navigation'
+const workos = new WorkOS(process.env.WORKOS_API_KEY)
 
-function ConfirmEmail() {
+export default async function LoginPage({
+    searchParams
+}: {
+    searchParams: { [key: string]: string | string[] | undefined }
+}) {
+    const user = await auth()
+    if (user) redirect('/inicio')
+
+    // SignIn properties
+    // const facebookOAuthUrl = workos.userManagement.getAuthorizationUrl({
+    //     clientId: process.env.WORKOS_CLIENT_ID,
+    //     provider: 'FacebookOAuth',
+    //     redirectUri: process.env.API_URL + '/api/auth/callback'
+    // })
+    const googleOAuthUrl = workos.userManagement.getAuthorizationUrl({
+        clientId: process.env.WORKOS_CLIENT_ID,
+        provider: 'GoogleOAuth',
+        redirectUri: process.env.API_URL + '/api/auth/callback'
+    })
+    async function sendEmail(formData: FormData) {
+        'use server'
+
+        const body = Object.fromEntries(formData.entries())
+
+        await fetch(process.env.API_URL + '/api/auth/email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then((res) => {
+            if (res.ok) redirect('/login?confirmarEmail')
+
+            redirect('/login?error=SendEmail')
+        })
+    }
+
+    // SignUp properties
+    async function createAccount(formData: FormData) {
+        'use server'
+
+        const body = Object.fromEntries(formData.entries())
+
+        await fetch(process.env.API_URL + '/api/users/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then((res) => {
+            console.log(res.status)
+            if (res.ok) redirect('/')
+
+            redirect('/login?error=CreateAccount')
+        })
+    }
+
+    function Container() {
+        if (user === false) return <Login.SignUp createAccount={createAccount} />
+        else if (searchParams.confirmarEmail === '') return <Login.ConfirmEmail />
+        else return <Login.SignIn facebookOAuthUrl={''} googleOAuthUrl={googleOAuthUrl} sendEmail={sendEmail} />
+    }
+
     return (
-        <main className="login confirm-email">
-            <h1>Verifique seu email!</h1>
-            <p>Enviamos um link para que você possa fazer login rapidamente</p>
-        </main>
-    )
-
-}
-
-export default function Login() {
-    // Redirecting
-    const { data, status } = useSession()
-    if(status === 'authenticated' && data.user.registered) redirect('/inicio')
-    else if(status === 'authenticated' && !data.user.registered) redirect('/login/registrar')
-
-    // Error handling
-    const [error, setError] = useState('')
-    const params = useSearchParams()
-    const errorCode = params.get('error')
-    useEffect(() => {
-        if(!errorCode) return
-
-        switch(errorCode) {
-            case 'CreateAccountError':
-                setError('Não foi possível criar sua conta. Tente novamente')
-                break
-            case 'OAuthSignin':
-                setError('Não foi possível fazer login com a conta selecionada.')
-                break
-            case 'OAuthCallback':
-                setError('Não foi possível fazer login com a conta selecionada.')
-                break
-            case 'OAuthAccountNotLinked':
-                setError('Esse meio de login não está vinculado à sua conta do PAS Academy, para vincular sua conta, entre usando o seu e-mail')
-                break
-            case 'Verification':
-                setError('O token de verificação expirou.')
-                break
-            default:
-                setError('Ocorreu um erro desconhecido.')
-        }
-    }, [errorCode])    
-
-    return (
-        <>
-            <header>
+        <div className="h-svh bg-gradient-to-br from-primary via-blue-800 to-primary">
+            <header className="mx-auto flex h-[60px] max-w-screen-2xl items-center justify-between px-6">
                 <Logo color="white" />
             </header>
-            <main className="login">
-                {error && (
-                        <div className="error">
-                            <p><strong>Ocorreu um erro:</strong> {error}</p>
-                        </div>
-                )}
-                {params.has('confirmarEmail') ? (<ConfirmEmail />) : <>
-                    <h1>Tenha uma conta para toda a sua jornada de estudante</h1>
-                    <button className="oauth2" id="google" onClick={() => signIn('google')}><Image src="/assets/icons/google.png" alt="Google" width="30" height="30" />Continuar com Google</button>
-                    <button className="oauth2" id="facebook" onClick={() => signIn('facebook')}><Image src="/assets/icons/facebook.png" alt="Facebook" width="30" height="30" />Continuar com Facebook</button>
-                    <div className="divider">
-                        <span>ou</span>
-                    </div>
-                    <form onSubmit={(e) => {
-                        e.preventDefault()
-                        const button = document.querySelector('button[type="submit"]') as HTMLButtonElement
-                        button.setAttribute('disabled', 'true')
-                        button.innerText = 'Carregando...'
-
-                        const email = e.currentTarget.email.value
-                        signIn('email', { email })
-                    }}>
-                        <div className="input">
-                            <label htmlFor="email">E-mail</label>
-                            <input type="email" id="email" placeholder="Digite seu e-mail" autoComplete="email" required />
-                        </div>
-                        <button type="submit">Continuar</button>
-                    </form>
-                    <p id="terms">Ao continuar, você concorda com nossos <a href="/termos">Termos de serviço</a> e nossa <a href="/privacidade">Política de privacidade</a></p>
-                </>}
+            <main className="relative mx-auto mt-4 max-w-xl text-center">
+                {searchParams.error && <Login.Error error={searchParams.error} />}
+                <Container />
             </main>
-        </>
+        </div>
     )
 }

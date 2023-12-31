@@ -1,18 +1,14 @@
-import ContentRow from '@/components/main/ContentRow'
-import Button from '@/components/ui/Button'
-import Search from '@/components/main/Search'
+import { ContentRow, Slider } from '@/layouts/Inicio'
 
 export default async function Inicio() {
-    const topics = await fetch(process.env.API_URL + '/api/topics', { cache: 'no-cache' }).then((res) => res.json())
+    const topics = await fetch(process.env.API_URL + '/api/topics', { cache: 'no-cache' }).then(
+        (res) => res.json()
+    )
 
     return (
-        <>
-            <header>
-                <Search />
-            </header>
-            <main>
-                
-            </main>
-        </>
+        <main className="flex-1 pt-3">
+            <Slider slider={topics.slider} />
+            <ContentRow row={topics.contentRows[0]} />
+        </main>
     )
 }

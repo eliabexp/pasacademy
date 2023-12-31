@@ -1,28 +1,26 @@
-import '@/styles/global.scss'
 import AuthProvider from '@/components/providers/AuthProvider'
-import ThemeProvider from '@/components/providers/ThemeProvider'
-import { auth } from '@/auth'
+import Provider from '@/components/providers/Provider'
+import auth from '@/lib/auth'
 import { inter } from './fonts'
 import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
     title: {
-        template: '%s - PAS Academy',
-        default: 'PAS Academy'
+        template: '%s - Pas Academy',
+        default: 'Pas Academy'
     },
-    description: 'Uma plataforma completa sobre o PAS UnB.',
+    description: 'Uma plataforma completa sobre o PAS UnB.'
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const session = await auth()
+    const user = await auth()
 
     return (
         <html lang="pt-br">
             <body className={inter.className}>
-                <AuthProvider session={session}>
-                    <ThemeProvider>
-                        {children}
-                    </ThemeProvider>
+                <AuthProvider user={user}>
+                    <Provider>{children}</Provider>
                 </AuthProvider>
             </body>
         </html>

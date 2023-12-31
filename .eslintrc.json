@@ -3,7 +3,11 @@
         "browser": true,
         "es2021": true
     },
-    "extends": ["plugin:@next/next/recommended"],
+    "extends": [
+        "plugin:@next/next/recommended",
+        "plugin:react/recommended",
+        "plugin:tailwindcss/recommended"
+    ],
     "overrides": [
         {
             "env": { "node": true },
@@ -20,6 +24,13 @@
     "rules": {
         "@stylistic/indent": ["off", 4],
         "@stylistic/quotes": ["warn", "single"],
-        "@stylistic/semi": ["error", "never"]
+        "@stylistic/semi": ["error", "never"],
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-no-target-blank": "off"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
     }
 }

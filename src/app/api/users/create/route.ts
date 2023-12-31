@@ -1,34 +1,37 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
-import { redirect } from 'next/navigation'
 import startDB from '@/lib/mongoose'
 import users from '@/models/user'
 import sessions from '@/models/session'
-import accounts from '@/models/account'
+import auth from '@/lib/auth'
+import { cookies } from 'next/headers'
 
-const teacherEmails = [
-    '@edu.se.df.gov.br'
-]
+const teacherEmails = ['@edu.se.df.gov.br']
 
 export async function POST(req: NextRequest) {
     const body = await req.json()
     const schema = z.object({
         name: z.string().trim().min(2).max(22),
         gender: z.enum(['m', 'f', 'u']),
-        level: z.coerce.number().int().min(1).max(3),
+        level: z.coerce.number().int().min(1).max(3)
     })
 
     const session = await auth()
-    if(!session || session.user.registered) redirect('/login')
+    if (session !== false) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     try {
         const user = schema.parse(body)
 
-        await startDB()
+        const token = cookies().get(
+            `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
+        )
+        if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-        const userEmail = session.user.email
+        await startDB('authDB')
+        const session = await sessions.findOne({ token: token.value })
+
+        await startDB('platformDB')
+        const userEmail = session.userId
         const newUser = await users.create({
             email: userEmail,
             account: {},
@@ -39,15 +42,12 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        // Update temporary session and account
+        // Update temporary sessions
         await startDB('authDB')
-
-        await sessions.updateMany({ userId: `temp-${userEmail}` }, { userId: newUser.id })
-        await accounts.updateMany({ userId: `temp-${userEmail}` }, { userId: newUser.id })
+        await sessions.updateMany({ userId: userEmail }, { userId: newUser.id })
 
         return NextResponse.json({ message: 'Success' }, { status: 200 })
-    }
-    catch(err) {
+    } catch (err) {
         return NextResponse.json({ error: 'Bad request' }, { status: 400 })
     }
 }

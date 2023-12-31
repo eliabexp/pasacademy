@@ -1,9 +1,9 @@
 import { model, models, InferSchemaType, Schema } from 'mongoose'
 
 const schema = new Schema({
-    sessionToken: { type: String, required: true, unique: true },
+    token: { type: String, required: true, unique: true },
     userId: { type: String, required: true },
-    expires: { type: Date, required: true }
+    expires: { type: Date, default: Date.now() + 1000 * 60 * 60 * 24 * 30 },
 })
 
 export type Session = InferSchemaType<typeof schema>

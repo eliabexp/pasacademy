@@ -1,21 +1,21 @@
 import { model, models, InferSchemaType, Schema } from 'mongoose'
 
 const subjectsId: { [key: string]: number } = {
-    'portugues': 10,
-    'geografia': 11,
-    'historia': 12,
-    'sociologia': 13,
-    'filosofia': 14,
-    'artes': 15,
-    'ingles': 16,
-    'espanhol': 17,
-    'frances': 18,
-    'educacaofisica': 19,
-    'matematica': 20,
-    'fisica': 21,
-    'quimica': 22,
-    'biologia': 23,
-    'obras': 30,
+    portugues: 10,
+    geografia: 11,
+    historia: 12,
+    sociologia: 13,
+    filosofia: 14,
+    artes: 15,
+    ingles: 16,
+    espanhol: 17,
+    frances: 18,
+    educacaofisica: 19,
+    matematica: 20,
+    fisica: 21,
+    quimica: 22,
+    biologia: 23,
+    obras: 30
 }
 
 const schema = new Schema({
@@ -25,54 +25,75 @@ const schema = new Schema({
     year: { type: Number, required: true },
     difficulty: { type: Number, min: 1, max: 3 },
     institution: { type: String, required: true },
-    number: { type: Number },
     type: { type: String, enum: ['a', 'b', 'c', 'd'], required: true },
     tags: [{ type: String }],
-    content: {
-        question: { type: String, required: true },
-        alternatives: [{
-            text: { type: String, required: true },
-            isCorrect: { type: Boolean, required: true },
-            explanation: { type: String }
-        }]
-    },
+    content: { type: String },
+    image: { type: String },
+    instruction: { type: String },
+    questions: [
+        {
+            content: String,
+            image: String,
+            alternatives: [
+                {
+                    text: { type: String, required: true },
+                    isCorrect: { type: Boolean, required: true },
+                    image: { type: String },
+                    explanation: { type: String }
+                }
+            ],
+            interactions: {
+                answers: [
+                    {
+                        date: { type: Date, required: true },
+                        userId: { type: String, required: true },
+                        answer: { type: String, required: true },
+                        timeElapsed: { type: Number, required: true }
+                    }
+                ],
+                skips: [
+                    {
+                        date: { type: Date, required: true },
+                        userId: { type: String, required: true }
+                    }
+                ]
+            }
+        }
+    ],
     interactions: {
-        answers: [{
-            date: { type: Date, required: true },
-            userId: { type: String, required: true },
-            answer: { type: String, required: true },
-            timeElapsed: { type: Number, required: true }
-        }],
-        comments: [{
-            userId: { type: String, required: true },
-            comment: { type: String, required: true },
-            date: { type: Date, required: true },
-            id: { type: String, required: true }
-        }],
-        likes: [{
-            date: { type: Date, required: true },
-            userId: { type: String, required: true, unique: true },
-        }],
-        shares: [{
-            date: { type: Date, required: true },
-            userId: { type: String, required: true },
-        }],
-        skips: [{
-            date: { type: Date, required: true },
-            userId: { type: String, required: true },
-        }],
-        views: [{
-            date: { type: Date, required: true },
-            userId: { type: String, required: true },
-        }]
+        comments: [
+            {
+                userId: { type: String, required: true },
+                comment: { type: String, required: true },
+                date: { type: Date, required: true },
+                id: { type: String, required: true }
+            }
+        ],
+        likes: [
+            {
+                date: { type: Date, required: true },
+                userId: { type: String, required: true, unique: true }
+            }
+        ],
+        shares: [
+            {
+                date: { type: Date, required: true },
+                userId: { type: String, required: true }
+            }
+        ],
+        views: [
+            {
+                date: { type: Date, required: true },
+                userId: { type: String, required: true }
+            }
+        ]
     }
-})
-.pre('validate', async function(this: any, next) {
-    if(this.isNew) {
+}).pre('validate', async function (this: any, next) {
+    if (this.isNew) {
         // Generate question id
-        const { year, level, difficulty, number } = this
+        const { year, level, difficulty } = this
         const subjectId = subjectsId[this.subject]
-        this.id = subjectId + level + String(year).slice(-2) + difficulty + number
+        this.id = subjectId + level + String(year).slice(-2) + difficulty
     }
 
     next()

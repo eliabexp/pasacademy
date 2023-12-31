@@ -10,5 +10,7 @@ declare namespace NodeJS {
         SMTP_PASSWORD: string
         SMTP_HOST: string
         SMTP_PORT: number
+        WORKOS_CLIENT_ID: string
+        WORKOS_API_KEY: string
     }
 }
