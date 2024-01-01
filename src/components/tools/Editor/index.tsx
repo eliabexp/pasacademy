@@ -51,8 +51,8 @@ export default function Editor({ content = '', editable = false }: EditorProps) 
     })
 
     return (
-        <Body className="min-h-80">
-            <EditorContent editor={editor} />
+        <Body>
+            <EditorContent className="min-h-80 p-1" editor={editor} />
         </Body>
     )
 }

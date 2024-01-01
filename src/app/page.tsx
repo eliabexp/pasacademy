@@ -10,7 +10,7 @@ export default async function Home() {
     if (user) redirect('/inicio')
 
     return (
-        <div className="absolute z-10 w-full bg-gradient-to-br from-primary via-blue-800 to-primary">
+        <div className="absolute z-10 w-full bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
             <header className="sticky top-0 z-20 mx-auto flex h-[60px] max-w-screen-2xl items-center justify-between px-6 transition-colors duration-200">
                 <Logo color="white" />
                 <Link href="/login" className="font-bold underline underline-offset-4">
