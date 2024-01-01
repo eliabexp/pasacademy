@@ -22,11 +22,12 @@
     },
     "plugins": ["@stylistic"],
     "rules": {
-        "@stylistic/indent": ["off", 4],
-        "@stylistic/quotes": ["warn", "single"],
+        "@stylistic/indent": ["error", 4, { "SwitchCase": 1 }],
+        "@stylistic/quotes": ["error", "single"],
         "@stylistic/semi": ["error", "never"],
         "react/react-in-jsx-scope": "off",
-        "react/jsx-no-target-blank": "off"
+        "react/jsx-no-target-blank": "off",
+        "no-else-return": "error"
     },
     "settings": {
         "react": {

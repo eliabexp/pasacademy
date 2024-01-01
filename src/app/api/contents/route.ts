@@ -54,18 +54,18 @@ async function getContents(query: Query) {
             level: query.level
         }
     })
-    pipeline.push({ $limit: 8 }),
-        pipeline.push({
-            $project: {
-                title: 1,
-                subject: 1,
-                subjectTitle: 1,
-                name: 1,
-                id: 1,
-                thumb: 1,
-                _id: 0
-            }
-        })
+    pipeline.push({ $limit: 8 })
+    pipeline.push({
+        $project: {
+            title: 1,
+            subject: 1,
+            subjectTitle: 1,
+            name: 1,
+            id: 1,
+            thumb: 1,
+            _id: 0
+        }
+    })
 
     const data = await contents.aggregate(pipeline).exec()
 

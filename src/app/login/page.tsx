@@ -65,8 +65,14 @@ export default async function LoginPage({
 
     function Container() {
         if (user === false) return <Login.SignUp createAccount={createAccount} />
-        else if (searchParams.confirmarEmail === '') return <Login.ConfirmEmail />
-        else return <Login.SignIn facebookOAuthUrl={''} googleOAuthUrl={googleOAuthUrl} sendEmail={sendEmail} />
+        if (searchParams.confirmarEmail === '') return <Login.ConfirmEmail />
+        return (
+            <Login.SignIn
+                facebookOAuthUrl={''}
+                googleOAuthUrl={googleOAuthUrl}
+                sendEmail={sendEmail}
+            />
+        )
     }
 
     return (
