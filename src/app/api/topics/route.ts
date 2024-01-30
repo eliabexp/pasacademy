@@ -10,12 +10,14 @@ interface ContentRow {
     subjects: string[]
     level: number
     sort: 'new' | 'view'
+    type: 'contentRow'
 }
 interface Slider {
     name: string
     description: string
     image: string
     url: string
+    type: 'slide'
 }
 
 export async function GET(req: NextRequest) {
@@ -23,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     const user = await auth()
 
-    const contentRows: ContentRow[] = []
+    const rows: ContentRow[] = []
     const slider: Slider[] = []
 
     const topicsArray = await topics.find({}).select({ _id: 0 }).lean()
@@ -42,21 +44,23 @@ export async function GET(req: NextRequest) {
         .map((topic) => {
             switch (topic.type) {
                 case 'contentRow': {
-                    contentRows.push({
+                    rows.push({
                         name: topic.name,
                         contents: topic.contents,
                         subjects: topic.subjects,
                         level: topic.level,
-                        sort: topic.sort
+                        sort: topic.sort,
+                        type: topic.type
                     })
                     break
                 }
-                case 'slider': {
+                case 'slide': {
                     slider.push({
                         name: topic.name,
                         description: topic.description,
                         image: topic.image,
-                        url: topic.url
+                        url: topic.url,
+                        type: topic.type
                     })
                     break
                 }
@@ -65,7 +69,7 @@ export async function GET(req: NextRequest) {
 
     const data = {
         slider,
-        contentRows
+        rows
     }
 
     return NextResponse.json(data)

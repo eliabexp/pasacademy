@@ -69,7 +69,7 @@ const schema = new Schema({
         ingles: 'Inglês',
         espanhol: 'Espanhol',
         frances: 'Francês',
-        educacaofisica: 'Educação física',
+        literatura: 'Literatura',
         matematica: 'Matemática',
         fisica: 'Física',
         quimica: 'Quimica',

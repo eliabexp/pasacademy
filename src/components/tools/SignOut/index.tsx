@@ -2,10 +2,17 @@
 
 import { LogOut } from 'lucide-react'
 import { useLogout } from '@/hooks/auth'
+import { useRouter } from 'next/navigation'
 
-export default function DarkModeSwitcher() {
+export default function SignOut() {
+    const router = useRouter()
     return (
-        <button onClick={() => useLogout()}>
+        <button
+            onClick={() => {
+                useLogout()
+                router.push('/')
+            }}
+        >
             <LogOut />
         </button>
     )

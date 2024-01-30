@@ -1,10 +1,8 @@
 import Login from '@/layouts/Login'
 import Logo from '@/components/ui/Logo'
 import auth from '@/lib/auth'
-import { WorkOS } from '@workos-inc/node'
 import { redirect } from 'next/navigation'
-
-const workos = new WorkOS(process.env.WORKOS_API_KEY)
+import { cookies } from 'next/headers'
 
 export default async function LoginPage({
     searchParams
@@ -15,69 +13,67 @@ export default async function LoginPage({
     if (user) redirect('/inicio')
 
     // SignIn properties
-    // const facebookOAuthUrl = workos.userManagement.getAuthorizationUrl({
-    //     clientId: process.env.WORKOS_CLIENT_ID,
-    //     provider: 'FacebookOAuth',
-    //     redirectUri: process.env.API_URL + '/api/auth/callback'
-    // })
-    const googleOAuthUrl = workos.userManagement.getAuthorizationUrl({
-        clientId: process.env.WORKOS_CLIENT_ID,
-        provider: 'GoogleOAuth',
-        redirectUri: process.env.API_URL + '/api/auth/callback'
-    })
+    const callbackUrl = `${process.env.API_URL}/auth/callback`
+    const facebookOAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.FACEBOOK_CLIENT_ID}&redirect_uri=${callbackUrl}&state=facebook&scope=email`
+    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=${callbackUrl}&client_id=${process.env.GOOGLE_CLIENT_ID}&state=google&scope=https%3A//www.googleapis.com/auth/userinfo.email+https%3A//www.googleapis.com/auth/userinfo.profile`
+
     async function sendEmail(formData: FormData) {
         'use server'
 
         const body = Object.fromEntries(formData.entries())
 
-        await fetch(process.env.API_URL + '/api/auth/email', {
+        await fetch(`${process.env.API_URL}/auth`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         }).then((res) => {
-            if (res.ok) redirect('/login?confirmarEmail')
+            res.ok && redirect('/login?confirmarEmail')
+            res.status === 400 && redirect('/login?error=InvalidEmail')
 
             redirect('/login?error=SendEmail')
         })
     }
 
-    // SignUp properties
-    async function createAccount(formData: FormData) {
+    // SignUp action
+    async function signUp(formData: FormData) {
         'use server'
 
         const body = Object.fromEntries(formData.entries())
 
-        await fetch(process.env.API_URL + '/api/users/create', {
+        const session = await auth()
+        if (session !== false) redirect('/login')
+
+        const tokenName = `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
+        const cookie = cookies().get(tokenName)?.value
+
+        await fetch(`${process.env.API_URL}/users`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', 'Cookie': `${tokenName}=${cookie}` },
             body: JSON.stringify(body)
         }).then((res) => {
-            console.log(res.status)
-            if (res.ok) redirect('/')
-
-            redirect('/login?error=CreateAccount')
+            res.ok && redirect('/')
+            res.status === 400 && redirect('/login?error=InvalidData')
+            redirect('/login')
         })
     }
 
     function Container() {
-        if (user === false) return <Login.SignUp createAccount={createAccount} />
+        if (user === false) return <Login.SignUp action={signUp} />
         if (searchParams.confirmarEmail === '') return <Login.ConfirmEmail />
         return (
             <Login.SignIn
-                facebookOAuthUrl={''}
+                facebookOAuthUrl={facebookOAuthUrl}
                 googleOAuthUrl={googleOAuthUrl}
-                sendEmail={sendEmail}
+                sendEmailAction={sendEmail}
             />
         )
     }
 
     return (
-        <div className="h-svh bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
-            <header className="mx-auto flex h-[60px] max-w-screen-2xl items-center justify-between px-6">
+        <div className="min-h-svh bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
+            <header className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6">
                 <Logo color="white" />
             </header>
             <main className="relative mx-auto mt-4 max-w-xl text-center">

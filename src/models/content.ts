@@ -1,21 +1,21 @@
 import { model, models, InferSchemaType, Schema } from 'mongoose'
 
-const subjectsId: { [key: string]: number } = {
-    portugues: 10,
-    geografia: 11,
-    historia: 12,
-    sociologia: 13,
-    filosofia: 14,
-    artes: 15,
-    ingles: 16,
-    espanhol: 17,
-    frances: 18,
-    literatura: 19,
-    matematica: 20,
-    fisica: 21,
-    quimica: 22,
-    biologia: 23,
-    obras: 30
+const subjectsId: { [key: string]: string } = {
+    portugues: '10',
+    geografia: '11',
+    historia: '12',
+    sociologia: '13',
+    filosofia: '14',
+    artes: '15',
+    ingles: '16',
+    espanhol: '17',
+    frances: '18',
+    literatura: '19',
+    matematica: '20',
+    fisica: '21',
+    quimica: '22',
+    biologia: '23',
+    obras: '30'
 }
 
 const schema = new Schema({
@@ -28,7 +28,7 @@ const schema = new Schema({
     createdAt: { type: Date, default: Date.now() },
     author: { type: String, default: 'Pas Academy' },
     thumb: { type: String },
-    title: { type: String, required: true },
+    title: { type: String, maxLength: 96, required: true },
     status: { type: String, enum: ['draft', 'published'], default: 'draft' },
     tags: [{ type: String }],
     content: { type: String, required: true },
@@ -83,7 +83,7 @@ const schema = new Schema({
         do {
             this.id =
                 subjectId +
-                this.level +
+                String(this.level) +
                 String(Math.floor(Math.random() * 100000)).padStart(5, '0')
         } while (await this.constructor.findOne({ id: this.id }))
     }
@@ -99,7 +99,7 @@ const schema = new Schema({
         ingles: 'Inglês',
         espanhol: 'Espanhol',
         frances: 'Francês',
-        educacaofisica: 'Educação física',
+        literatura: 'Literatura',
         matematica: 'Matemática',
         fisica: 'Física',
         quimica: 'Quimica',

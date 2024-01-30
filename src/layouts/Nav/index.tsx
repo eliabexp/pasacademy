@@ -1,73 +1,64 @@
-'use client'
-
 import { Home, LibraryBig, ListTodo, Plus, Route, User, Users } from 'lucide-react'
-import { useEffect, useContext } from 'react'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { useTheme } from 'next-themes'
-import { LayoutContext } from '@/app/(main)/layout'
-import NavButton from '@/components/ui/NavButton'
 import { useSession } from '@/hooks/auth'
+import Menu from './Menu'
 
-interface LinksList {
-    name: string
-    url: string
-    icon: React.ReactNode
-    iconActive: React.ReactNode
+interface NavProps {
+    page: string
+    setPage: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function Nav() {
-    const { theme } = useTheme()
-    const { page, setPage } = useContext(LayoutContext)
+export default function Nav({ page, setPage }: NavProps) {
     const user = useSession()
 
-    const fillColor = theme === 'dark' ? '#fff' : '#000'
-
-    const links: LinksList[] = [
+    const links = [
         {
             name: 'Início',
             url: 'inicio',
             icon: <Home />,
-            iconActive: <Home fill={fillColor} />
+            iconActive: <Home fill="currentColor" />
         },
         {
             name: 'Obras',
             url: 'obras',
             icon: <LibraryBig />,
-            iconActive: <LibraryBig fill={fillColor} />
+            iconActive: <LibraryBig fill="currentColor" />
         },
         {
             name: 'Questões',
             url: 'questoes',
             icon: <ListTodo />,
-            iconActive: <ListTodo fill={fillColor} />
+            iconActive: <ListTodo fill="currentColor" />
         },
         {
             name: 'Trilhas',
             url: 'trilhas',
             icon: <Route />,
-            iconActive: <Route fill={fillColor} />
+            iconActive: <Route fill="currentColor" />
         },
         {
             name: user ? 'Perfil' : 'Entrar',
             url: 'perfil',
             icon: <User />,
-            iconActive: <User fill={fillColor} />
+            iconActive: <User fill="currentColor" />
         },
         {
             name: 'Comunidade',
             url: 'comunidade',
             icon: <Users />,
-            iconActive: <Users fill={fillColor} />
+            iconActive: <Users fill="currentColor" />
         },
         {
             name: 'Criar',
             url: 'criar',
             icon: <Plus />,
-            iconActive: <Plus />
+            iconActive: <Plus />,
+            hide: !user
         }
     ]
 
-    // Set active link
+    // Set active page
     const pathName = usePathname().split('/')[1]
     useEffect(() => {
         if (links.some((l) => l.url === pathName)) setPage(pathName)
@@ -75,21 +66,8 @@ export default function Nav() {
     }, [pathName])
 
     return (
-        <nav className="fixed bottom-0 z-10 flex h-[52px] w-full items-center md:static md:mt-8 md:h-max md:w-[240px] md:flex-col md:gap-1 md:px-2">
-            {links.map((link, index) => {
-                const { name, url, icon, iconActive } = link
-                const activeLink = page === url
-
-                return (
-                    <NavButton
-                        url={'/' + url}
-                        icon={activeLink ? iconActive : icon}
-                        name={name}
-                        active={activeLink}
-                        key={name}
-                    />
-                )
-            })}
+        <nav className="fixed bottom-0 z-10 flex h-14 w-full items-center text-black dark:bg-bg-dark dark:text-white md:static md:h-full md:min-h-[calc(100svh-4rem)] md:w-auto md:shrink-0 md:basis-60 md:flex-col md:gap-1 md:px-2 md:py-8">
+            <Menu links={links} page={page} />
         </nav>
     )
 }

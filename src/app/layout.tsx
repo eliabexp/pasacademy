@@ -1,5 +1,5 @@
 import AuthProvider from '@/components/providers/AuthProvider'
-import Provider from '@/components/providers/Provider'
+import ThemeProvider from '@/components/providers/ThemeProvider'
 import auth from '@/lib/auth'
 import { inter } from './fonts'
 import type { Metadata } from 'next'
@@ -18,9 +18,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     return (
         <html lang="pt-br">
-            <body className={inter.className}>
+            <body className={`${inter.className} bg-bg dark:bg-bg-dark`}>
                 <AuthProvider user={user}>
-                    <Provider>{children}</Provider>
+                    <ThemeProvider>{children}</ThemeProvider>
                 </AuthProvider>
             </body>
         </html>

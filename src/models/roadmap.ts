@@ -12,5 +12,5 @@ const schema = new Schema({
     ]
 })
 
-export type Road = InferSchemaType<typeof schema>
-export default models.road || model('road', schema)
+export type Roadmap = InferSchemaType<typeof schema>
+export default models.roadmap || model('roadmap', schema)

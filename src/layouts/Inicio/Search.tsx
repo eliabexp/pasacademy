@@ -22,14 +22,13 @@ export default function Search({ subject, placeholder }: SearchProps) {
     const [results, setResults] = useState([])
 
     useEffect(() => {
+        if (search.length === 0) return setResults([]) // Remove the list when the search is empty
         if (search.length < 2) return
 
         // Delay the request to avoid too many requests
         const delay = setTimeout(() => {
-            fetch(`/api/contents?multiple&name=${search}${subject ? `&subject=${subject}` : ''}`, {
-                next: {
-                    revalidate: 600
-                }
+            fetch(`/api/contents?multiple&q=${search}`, {
+                next: { revalidate: 600 }
             })
                 .then((res) => {
                     if (res.ok) return res.json()
@@ -43,31 +42,33 @@ export default function Search({ subject, placeholder }: SearchProps) {
     }, [search])
 
     return (
-        <div className="relative w-full md:w-3/4 md:max-w-96">
+        <div className="w-full md:w-3/4 md:max-w-96">
             <Input
                 type="search"
+                id="search"
                 placeholder={placeholder}
                 minLength={2}
                 maxLength={48}
                 autoComplete="off"
                 onChange={(e) => setSearch(e.target.value.trimStart())}
-            />
-            {results.length > 0 && (
-                <menu className="absolute top-full mt-2 w-full overflow-hidden rounded-xl border bg-black">
-                    {results.map(({ id, subject, subjectTitle, name, title }: Result) => {
-                        return (
-                            <li key={id}>
-                                <SearchOption
-                                    title={title}
-                                    subjectTitle={subjectTitle}
-                                    subject={subject}
-                                    name={name}
-                                />
-                            </li>
-                        )
-                    })}
-                </menu>
-            )}
+            >
+                {results.length > 0 && (
+                    <>
+                        {results.map(({ id, subject, subjectTitle, name, title }: Result) => {
+                            return (
+                                <li key={id}>
+                                    <SearchOption
+                                        title={title}
+                                        subjectTitle={subjectTitle}
+                                        subject={subject}
+                                        name={name}
+                                    />
+                                </li>
+                            )
+                        })}
+                    </>
+                )}
+            </Input>
         </div>
     )
 }

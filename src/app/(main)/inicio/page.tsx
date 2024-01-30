@@ -1,14 +1,22 @@
 import { ContentRow, Slider } from '@/layouts/Inicio'
+import { type Topic } from '@/models/topic'
 
 export default async function Inicio() {
-    const topics = await fetch(process.env.API_URL + '/api/topics', { cache: 'no-cache' }).then(
+    const topics = await fetch(process.env.API_URL + '/topics', { cache: 'no-cache' }).then(
         (res) => res.json()
     )
 
     return (
-        <main className="flex-1 pt-3">
+        <main className="pt-3">
             <Slider slider={topics.slider} />
-            <ContentRow row={topics.contentRows[0]} />
+            {topics.rows.map((row: Topic) => {
+                switch (row.type) {
+                    case 'contentRow':
+                        return <ContentRow key={row.name} row={row} />
+                    default:
+                        return null
+                }
+            })}
         </main>
     )
 }

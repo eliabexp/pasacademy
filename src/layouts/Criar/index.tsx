@@ -1,7 +1,9 @@
-import ContentForm from './ContentForm'
+import Content from './Content'
+import Form from './Form'
 import Header from './Header'
 
 export {
-    ContentForm,
+    Content,
+    Form,
     Header
 }

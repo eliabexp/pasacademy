@@ -7,7 +7,7 @@ interface LogoProps extends React.HTMLAttributes<HTMLAnchorElement> {
 }
 
 const link = tv({
-    base: 'flex flex-row items-center gap-2 md:w-44',
+    base: 'flex items-center gap-2',
     variants: {
         color: {
             white: '[&>*]:text-white',
@@ -19,7 +19,7 @@ const link = tv({
 export default function Logo({ color, className }: LogoProps) {
     return (
         <Link className={link({ color, className })} href="/">
-            <LibraryBig size={32} />
+            <LibraryBig size="32" />
             <span className="text-nowrap text-xl font-bold">Pas Academy</span>
         </Link>
     )

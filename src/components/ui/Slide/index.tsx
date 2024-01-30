@@ -10,9 +10,12 @@ interface SlideProps {
 
 export default function Slide({ name, description, url, image }: SlideProps) {
     return (
-        <Link className="relative mx-4 block overflow-hidden rounded-2xl" href={url || ''}>
+        <Link
+            className="relative mx-4 block overflow-hidden rounded-2xl md:h-full"
+            href={url || ''}
+        >
             <Image
-                className="block w-full"
+                className="block w-full transition-transform duration-500 ease-in-out hover:scale-125 md:h-full"
                 src={image}
                 alt={name}
                 width="1280"

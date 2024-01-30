@@ -11,11 +11,11 @@ interface ContentCardProps {
 export default function ContentCard({ title, thumb, subject, name }: ContentCardProps) {
     return (
         <Link
-            className="block w-[248px] p-1 text-center transition-transform duration-200 ease-in hover:scale-105"
+            className="block w-60 p-1 text-center transition-transform duration-300 ease-in-out hover:scale-105"
             href={`/${subject}/${name}`}
         >
             <Image
-                className="mb-1 rounded-2xl"
+                className="mb-1 block rounded-2xl"
                 src={thumb}
                 alt={title}
                 width={240}

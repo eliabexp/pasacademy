@@ -11,7 +11,7 @@ export default async function Home() {
 
     return (
         <div className="absolute z-10 w-full bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
-            <header className="sticky top-0 z-20 mx-auto flex h-[60px] max-w-screen-2xl items-center justify-between px-6 transition-colors duration-200">
+            <header className="sticky top-0 z-20 mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6 transition-colors duration-200">
                 <Logo color="white" />
                 <Link href="/login" className="font-bold underline underline-offset-4">
                     Entrar
@@ -23,7 +23,7 @@ export default async function Home() {
                         <h1 className="mb-4 text-4xl font-bold">
                             Uma plataforma completa sobre o PAS UnB.
                         </h1>
-                        <p className="mb-16 leading-6">
+                        <p className="mb-16 leading-6 md:mb-24">
                             No Pas Academy você tem acesso completo a um material didático criado
                             para otimizar suas preciosas horas de estudo. Tudo de graça!
                         </p>
@@ -38,30 +38,31 @@ export default async function Home() {
                         <picture className="block h-full md:h-auto md:w-full">
                             <source media="(min-width: 768px)" srcSet="/assets/images/tv.png" />
                             <img
+                                alt="Imagem da tela do site"
                                 className="block h-full md:h-auto md:w-full"
                                 src="/assets/images/smartphone.png"
-                                alt="Imagem da tela do site"
                             />
                         </picture>
                         <video
-                            src="/assets/images/download.mp4"
+                            className="absolute left-[5%] top-[3%] -z-10 h-[95%] w-[90%] object-cover md:left-[0.5%] md:top-[1%] md:h-[87%] md:w-[99%]"
                             autoPlay
                             loop
                             muted
-                            className="absolute left-[5%] top-[3%] -z-10 h-[95%] w-[90%] object-cover md:left-[0.5%] md:top-[1%] md:h-[87%] md:w-[99%]"
+                            playsInline
+                            src="/assets/images/download.mp4"
                         ></video>
                     </div>
                 </section>
                 <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src={'/assets/images/questions.jpg'}
+                        src="/assets/images/content.jpg"
                         alt="Captura da tela de questões"
                         width="1280"
                         height="720"
                         draggable="false"
                     />
-                    <div className="">
+                    <div>
                         <h2 className="my-4 text-2xl font-bold">
                             Seu caminho para a aprovação começa aqui
                         </h2>
@@ -74,7 +75,7 @@ export default async function Home() {
                 <section className="px-6 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src={'/assets/images/content.jpg'}
+                        src="/assets/images/content.jpg"
                         alt="Captura da tela de conteúdos"
                         width="1280"
                         height="720"
@@ -93,13 +94,13 @@ export default async function Home() {
                 <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src={'/assets/images/content.jpg'}
+                        src="/assets/images/content.jpg"
                         alt="Captura da tela de trilhas"
                         width="1280"
                         height="720"
                         draggable="false"
                     />
-                    <div className="">
+                    <div>
                         <h2 className="my-4 text-2xl font-bold">
                             Conheça a sua melhor versão de estudante
                         </h2>
@@ -114,7 +115,7 @@ export default async function Home() {
                 <div className="my-24 flex flex-col flex-wrap justify-between gap-8 lg:flex-row [&_h3]:font-bold">
                     <div>
                         <Logo color="white" />
-                        <div className="mt-4 flex list-none flex-row items-center gap-4">
+                        <div className="mt-4 flex items-center gap-4">
                             <a
                                 href="https://instagram.com/pasacademy"
                                 target="_blank"

@@ -2,25 +2,18 @@
 
 import Header from '@/layouts/Header'
 import Nav from '@/layouts/Nav'
-import { createContext, useState } from 'react'
-
-export const LayoutContext = createContext(null as any)
+import { useState } from 'react'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const [page, setPage] = useState('')
 
     return (
-        <LayoutContext.Provider
-            value={{
-                page,
-                setPage
-            }}
-        >
-            <Header />
-            <div className="relative flex flex-col md:flex-row">
-                <Nav />
+        <>
+            <Header page={page} />
+            <div className="relative flex flex-col pb-14 md:flex-row md:pb-0">
+                <Nav page={page} setPage={setPage} />
                 {children}
             </div>
-        </LayoutContext.Provider>
+        </>
     )
 }

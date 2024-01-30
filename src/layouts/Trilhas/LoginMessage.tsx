@@ -2,7 +2,7 @@ import Button from '@/components/ui/Button'
 
 export default function LoginMessage() {
     return (
-        <main className="flex-1 p-4">
+        <main className="p-4">
             <h1 className="my-4 text-2xl font-bold">
                 Acesse sua conta para poder visualizar suas trilhas
             </h1>

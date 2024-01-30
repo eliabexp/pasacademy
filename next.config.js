@@ -12,7 +12,6 @@ const nextConfig = {
             { key: 'Content-Security-Policy', value: CSP.join(';') },
             { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
             { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-            { key: 'X-Powered-By', value: 'Pas Academy' }
         ]
 
         return [{ 

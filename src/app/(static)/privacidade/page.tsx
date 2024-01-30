@@ -1,8 +1,19 @@
 import { Body, Title } from '@/layouts/Content'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: {
+        absolute: 'Política de privacidade',
+    },
+    robots: {
+        index: false,
+        follow: true,
+    }
+}
 
 export default function Privacidade() {
     return (
-        <main>
+        <main className="p-4">
             <Title title="Política de privacidade" subtitle="Data de vigência: 28/12/2023" />
             <Body>
                 <p>
@@ -15,7 +26,6 @@ export default function Privacidade() {
                     Se você tiver interesse em ler os nossos <strong>termos de serviço</strong>,
                     você pode fazê-lo <a href="/termos">clicando aqui</a>
                 </p>
-                <hr />
                 <h2>Informações que coletamos</h2>
                 <p>Para criar uma conta no PAS Academy, os seguintes dados são solicitados:</p>
                 <table>

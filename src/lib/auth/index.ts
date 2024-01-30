@@ -3,13 +3,20 @@ import startDB from '@/lib/mongoose'
 import sessions from '@/models/session'
 import users, { type User } from '@/models/user'
 
-export default async function auth() {
+function getSessionToken() {
     const token = cookies().get(`${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`)
+    if (!token) return null
+
+    return token.value
+}
+
+export default async function auth() {
+    const token = getSessionToken()
     if (!token) return null
 
     await startDB('authDB')
     const session = await sessions.findOneAndUpdate(
-        { token: token.value },
+        { token: token },
         { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) }
     )
     if (!session) return null

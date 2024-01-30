@@ -1,6 +1,12 @@
 'use client'
 
-export default function SignUp({ createAccount }: { createAccount: (formData: FormData) => void }) {
+import Button from '@/components/ui/Button'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+
+export default function SignUp({ action }: { action: (formData: FormData) => void }) {
+    const [loading, setLoading] = useState(false)
+
     return (
         <>
             <h1 className="mb-8 text-center text-3xl font-bold">
@@ -8,14 +14,14 @@ export default function SignUp({ createAccount }: { createAccount: (formData: Fo
                 <br />
                 Pas Academy!
             </h1>
-            <form action={createAccount}>
+            <form action={action} onSubmit={() => setLoading(true)}>
                 <div className="mx-auto mb-6 w-72">
-                    <label htmlFor="email" className="mb-1 ml-2 block text-left">
-                        Como quer ser chamado?
+                    <label htmlFor="name" className="mb-1 ml-2 block text-left">
+                        Como você quer ser chamado(a)?
                     </label>
                     <input
                         autoComplete="name"
-                        className="w-full rounded-2xl border bg-transparent px-3 py-2 text-sm outline-white"
+                        className="w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-white"
                         id="name"
                         minLength={2}
                         maxLength={22}
@@ -28,31 +34,31 @@ export default function SignUp({ createAccount }: { createAccount: (formData: Fo
                     />
                 </div>
                 <div className="mx-auto mb-6 w-72">
-                    <label className="mb-1 ml-2 block text-left">Gênero (opcional)</label>
-                    <span className="flex flex-row items-center gap-3">
+                    <p className="mb-1 ml-2 block text-left">Gênero (opcional)</p>
+                    <div className="flex items-center gap-3">
                         <input type="radio" name="gender" id="m" value="m" />
                         <label htmlFor="m">Masculino</label>
-                    </span>
-                    <span className="flex flex-row items-center gap-3">
+                    </div>
+                    <div className="flex items-center gap-3">
                         <input type="radio" name="gender" id="f" value="f" />
                         <label htmlFor="f">Feminino</label>
-                    </span>
-                    <span className="flex flex-row items-center gap-3">
+                    </div>
+                    <div className="flex items-center gap-3">
                         <input type="radio" name="gender" id="u" value="u" defaultChecked />
                         <label htmlFor="u">Não selecionar</label>
-                    </span>
+                    </div>
                 </div>
                 <div className="mx-auto mb-6 w-72">
                     <label htmlFor="level" className="mb-1 ml-2 block text-left">
                         Qual etapa do PAS você vai fazer esse ano?
                     </label>
                     <select
-                        className="w-full rounded-2xl border bg-transparent px-3 py-2 text-sm outline-white"
+                        className="w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-white"
                         id="level"
                         name="level"
                         required
                     >
-                        <option value="" hidden selected>
+                        <option value="" hidden disabled>
                             Selecione uma opção
                         </option>
                         <option value="1">1ª etapa</option>
@@ -60,12 +66,14 @@ export default function SignUp({ createAccount }: { createAccount: (formData: Fo
                         <option value="3">3ª etapa</option>
                     </select>
                 </div>
-                <button
-                    className="mx-auto mb-8 flex flex-row gap-3 rounded-xl bg-white px-4 py-2 font-bold text-black transition-colors duration-300 hover:bg-white/80 disabled:bg-white/60"
+                <Button
+                    className="mx-auto mb-8 bg-white text-black"
+                    disabled={loading}
                     type="submit"
                 >
+                    {loading && <Loader2 className="animate-spin" />}
                     Criar conta
-                </button>
+                </Button>
             </form>
             <p className="mx-4 [&_a]:underline [&_a]:underline-offset-2">
                 Ao continuar, você concorda com nossos <a href="/termos">Termos de serviço</a> e

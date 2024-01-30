@@ -4,7 +4,7 @@ export default function ConfirmEmail() {
     return (
         <>
             <Image
-                src="/assets/images/mail-sent.svg"
+                src="/assets/icons/mail-sent.svg"
                 alt="Email enviado"
                 width="540"
                 height="511"

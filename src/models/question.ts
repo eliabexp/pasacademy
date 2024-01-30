@@ -10,7 +10,7 @@ const subjectsId: { [key: string]: number } = {
     ingles: 16,
     espanhol: 17,
     frances: 18,
-    educacaofisica: 19,
+    literatura: 19,
     matematica: 20,
     fisica: 21,
     quimica: 22,
@@ -92,7 +92,7 @@ const schema = new Schema({
     if (this.isNew) {
         // Generate question id
         const { year, level, difficulty } = this
-        const subjectId = subjectsId[this.subject]
+        const subjectId = subjectsId[this.subjects[0]]
         this.id = subjectId + level + String(year).slice(-2) + difficulty
     }
 

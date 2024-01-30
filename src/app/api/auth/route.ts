@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto'
 import { z } from 'zod'
 import { createTransport } from 'nodemailer'
 import startDB from '@/lib/mongoose'
+import sessions from '@/models/session'
 import tokens from '@/models/token'
 import users, { type User } from '@/models/user'
 
@@ -67,4 +68,18 @@ export async function POST(req: NextRequest) {
     } catch (err) {
         return NextResponse.json({ error: 'Bad request' }, { status: 400 })
     }
+}
+
+export async function DELETE(req: NextRequest) {
+    const cookieName = `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
+    const sessionToken = req.cookies.get(cookieName)
+    if (!sessionToken)
+        return NextResponse.json({ error: 'No session token found' }, { status: 401 })
+
+    await startDB('authDB')
+    await sessions.findOneAndDelete({ token: sessionToken.value })
+
+    req.cookies.delete(cookieName)
+
+    return NextResponse.json({ message: 'Success', status: 200 })
 }

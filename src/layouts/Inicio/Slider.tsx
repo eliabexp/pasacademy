@@ -11,10 +11,10 @@ interface SliderProps {
 
 export default function Slider({ slider }: SliderProps) {
     return (
-        <section className="w-full overflow-hidden">
-            <ul className="w-full">
+        <section className="w-full md:h-80">
+            <ul className="flex w-full overflow-x-auto md:h-full">
                 {slider.map((slide) => (
-                    <li key={slide.name}>
+                    <li className="md:shrink-0" key={slide.name}>
                         <Slide
                             name={slide.name}
                             description={slide.description}
