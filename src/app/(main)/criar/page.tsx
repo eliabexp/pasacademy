@@ -3,11 +3,11 @@
 import { Content, Form } from '@/layouts/Criar'
 import { redirect } from 'next/navigation'
 import { useSession } from '@/hooks/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export default function Criar() {
     const user = useSession()
-    // if (!user) redirect('/login')
+    if (!user) redirect('/login')
 
     const [options, setOptions] = useState<{
         type?: string
@@ -17,13 +17,9 @@ export default function Criar() {
         level?: number
     }>({})
 
-    // Animate form
-    useEffect(() => {}, [options])
-
     return (
         <main className="flex w-full p-4">
             <Form
-                className={options.type ? 'hidden' : ''}
                 options={options}
                 setOptions={setOptions}
             />

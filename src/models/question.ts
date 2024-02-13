@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const subjectsId: { [key: string]: number } = {
     portugues: 10,

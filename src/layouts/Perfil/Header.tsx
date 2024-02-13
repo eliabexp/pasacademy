@@ -1,4 +1,4 @@
-import SignOut from '@/components/tools/SignOut'
+import { SignOut } from '@/components/tools/SignOut'
 import { useSession } from '@/hooks/auth'
 
 export default function Header() {

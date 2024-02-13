@@ -1,11 +1,11 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { notFound } from 'next/navigation'
-import { z } from 'zod'
+import { type NextRequest, NextResponse } from 'next/server'
 import { type PipelineStage } from 'mongoose'
-import auth from '@/lib/auth'
-import startDB from '@/lib/mongoose'
+import { auth } from '@/lib/auth'
 import contents from '@/models/content'
+import { notFound } from 'next/navigation'
+import startDB from '@/lib/mongoose'
 import users from '@/models/user'
+import { z } from 'zod'
 
 interface Query {
     id?: string
@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     const body = await req.json()
     const schema = z.object({
-        title: z.string().trim().max(100),
+        title: z.string().trim().max(96),
         subject: z.enum([
             'portugues',
             'geografia',
@@ -123,9 +123,9 @@ export async function POST(req: NextRequest) {
             'biologia',
             'obras'
         ]),
-        name: z.string().max(100).trim().toLowerCase(),
-        level: z.number().int().min(1).max(3),
-        content: z.string().trim().min(100).max(16384),
+        level: z.coerce.number().int().min(1).max(3),
+        content: z.string().trim().min(96).max(16384),
+        files: z.array(z.string()).default([]),
         tags: z.array(z.string().min(2).max(32)).default([]),
         exercises: z
             .array(
@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
         // Check if content already exists
         const content = await contents.findOne({
             subject: data.subject,
-            $or: [{ name: data.name }, { title: data.title }]
+            title: data.title
         })
         if (content) return NextResponse.json({ error: 'Content already exists' }, { status: 409 })
 
@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
         await contents.create({
             title: data.title,
             subject: data.subject,
-            name: data.name,
+            name: data.title.toLowerCase().replace(/\s/g, '').normalize('NFD').replace(/\p{Mn}/gu, ''),
             level: data.level,
             tags: data.tags,
             content: data.content,
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ message: 'Success' }, { status: 201 })
     } catch (err) {
-        console.error(err)
+        console.log(err)
         return NextResponse.json({ error: err }, { status: 400 })
     }
 }

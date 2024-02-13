@@ -1,223 +1,204 @@
 'use client'
 
-import { useState } from 'react'
-import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
+import { useContext, useState } from 'react'
+import { LayoutContext } from '@/app/(main)/layout'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select'
 import { tv } from 'tailwind-variants'
 
-interface FormProps extends React.HTMLAttributes<HTMLDivElement> {
-    options: {
-        type?: string;
-        title?: string;
-        subject?: string;
-        subjects?: string[];
-        level?: number;
-    }
-    setOptions: React.Dispatch<React.SetStateAction<{
-        type?: string;
-        title?: string;
-        subject?: string;
-        subjects?: string[];
-        level?: number;
-    }>>
-}
-
-const div = tv({
-    base: 'mx-auto w-4/5 transform transition-transform duration-500 ease-in-out md:w-96'
-})
-
-export default function Form({ className, options, setOptions }: FormProps) {
-    const [type, setType] = useState(['content'])
-    const [subject, setSubject] = useState([''])
-    const [subjects, setSubjects] = useState([''])
-    const [title, setTitle] = useState('')
-    const [level, setLevel] = useState([''])
-
-    let FormContent = <></>
-
-    const subjectOptions = [
-        { name: 'Português', value: 'portugues' },
-        { name: 'Geografia', value: 'geografia' },
-        { name: 'História', value: 'historia' },
-        { name: 'Sociologia', value: 'sociologia' },
-        { name: 'Filosofia', value: 'filosofia' },
-        { name: 'Artes', value: 'artes' },
-        { name: 'Inglês', value: 'ingles' },
-        { name: 'Espanhol', value: 'espanhol' },
-        { name: 'Francês', value: 'frances' },
-        { name: 'Literatura', value: 'literatura' },
-        { name: 'Matemática', value: 'matematica' },
-        { name: 'Física', value: 'fisica' },
-        { name: 'Quimica', value: 'quimica' },
-        { name: 'Biologia', value: 'biologia' },
-        { name: 'Obra do PAS', value: 'obras' }
-    ]
-    const levelOptions = [
-        { name: '1º ano', value: '1' },
-        { name: '2º ano', value: '2' },
-        { name: '3º ano', value: '3' }
-    ]
-
-    switch (type[0]) {
-        case 'content':
-            FormContent = (
-                <div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="title">
-                            Título
-                        </label>
-                        <Input
-                            onChange={(e) => setTitle(e.target.value)}
-                            type="text"
-                            id="title"
-                            maxLength={96}
-                            placeholder="Título do conteúdo"
-                        />
-                    </div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="subject">
-                            Matéria
-                        </label>
-                        <Select
-                            id="subject"
-                            placeholder="Selecione a matéria"
-                            selected={subject}
-                            setSelected={setSubject}
-                            options={subjectOptions}
-                        />
-                    </div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="level">
-                            Ano
-                        </label>
-                        <Select
-                            id="level"
-                            selected={level}
-                            setSelected={setLevel}
-                            placeholder="Selecione o ano"
-                            options={levelOptions}
-                        />
-                    </div>
-                </div>
-            )
-            break
-        case 'questions':
-            FormContent = (
-                <div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="subject">
-                            Matérias
-                        </label>
-                        <Select
-                            id="subject"
-                            maxSelections={3}
-                            placeholder="Selecione até 3 matérias"
-                            selected={subjects}
-                            setSelected={setSubjects}
-                            options={subjectOptions}
-                        />
-                    </div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="level">
-                            Ano
-                        </label>
-                        <Select
-                            id="level"
-                            selected={level}
-                            setSelected={setLevel}
-                            placeholder="Selecione o ano"
-                            options={levelOptions}
-                        />
-                    </div>
-                </div>
-            )
-            break
-        case 'roadmap':
-            FormContent = (
-                <div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="">
-                            Nome da trilha
-                        </label>
-                        <Input type="text" />
-                    </div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="subject">
-                            Matérias
-                        </label>
-                        <Select
-                            id="subject"
-                            placeholder="Selecione até 3 matérias"
-                            maxSelections={3}
-                            selected={subjects}
-                            setSelected={setSubjects}
-                            options={subjectOptions}
-                        />
-                    </div>
-                    <div className="mb-8">
-                        <label className="mb-2 block" htmlFor="level">
-                            Ano
-                        </label>
-                        <Select
-                            id="level"
-                            selected={level}
-                            setSelected={setLevel}
-                            placeholder="Selecione o ano"
-                            options={levelOptions}
-                        />
-                    </div>
-                </div>
-            )
-            break
-    }
-
-    const ableToContinue = () => {
-        switch (type[0]) {
-            case 'content':
-                return title && subject[0] && level[0] ? true : false
-            case 'questions':
-                return subjects[0] && level[0] ? true : false
-            case 'roadmap':
-                return title && subjects[0] && level[0] ? true : false
-            default:
-                return false
+const form = tv({
+    base: 'mx-auto w-4/5 transition-transform duration-500 ease-in-out md:w-96',
+    variants: {
+        hide: {
+            true: 'hidden scale-0'
         }
     }
+})
 
+interface Options {
+    type?: string | undefined
+    title?: string | undefined
+    subject?: string | undefined
+    subjects?: string[] | undefined
+    level?: number | undefined
+}
+
+interface FormProps {
+    options: Options
+    setOptions: React.Dispatch<React.SetStateAction<Options>>
+}
+
+function SubjectSelect() {
     return (
-        <div className={div({ className })}>
+        <Select name="subject">
+            <SelectTrigger>
+                <SelectValue placeholder="Selecione uma matéria" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+                <SelectGroup>
+                    <SelectLabel>Linguagens</SelectLabel>
+                    <SelectItem value="portugues">Português</SelectItem>
+                    <SelectItem value="ingles">Inglês</SelectItem>
+                    <SelectItem value="espanhol">Espanhol</SelectItem>
+                    <SelectItem value="frances">Francês</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                    <SelectLabel>Ciências Humanas</SelectLabel>
+                    <SelectItem value="geografia">Geografia</SelectItem>
+                    <SelectItem value="historia">História</SelectItem>
+                    <SelectItem value="sociologia">Sociologia</SelectItem>
+                    <SelectItem value="filosofia">Filosofia</SelectItem>
+                    <SelectItem value="artes">Artes</SelectItem>
+                    <SelectItem value="literatura">Literatura</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                    <SelectLabel>Ciências Exatas</SelectLabel>
+                    <SelectItem value="matematica">Matemática</SelectItem>
+                    <SelectItem value="fisica">Física</SelectItem>
+                    <SelectItem value="quimica">Química</SelectItem>
+                    <SelectItem value="biologia">Biologia</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                    <SelectLabel>Obras</SelectLabel>
+                    <SelectItem value="obras">Obra do PAS</SelectItem>
+                </SelectGroup>
+            </SelectContent>
+        </Select>
+    )
+}
+
+function LevelSelect() {
+    return (
+        <>
+            <label className="mb-2 block" htmlFor="level">
+                Ano
+            </label>
+            <Select name="level" required>
+                <SelectTrigger>
+                    <SelectValue placeholder="Selecione o ano" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="1">1º ano</SelectItem>
+                    <SelectItem value="2">2º ano</SelectItem>
+                    <SelectItem value="3">3º ano</SelectItem>
+                </SelectContent>
+            </Select>
+        </>
+    )
+}
+
+export default function CreateForm({ options, setOptions }: FormProps) {
+    const [type, setType] = useState('content')
+    const [subject, setSubject] = useState([''])
+    const [subjects, setSubjects] = useState([''])
+
+    const { layout, setLayout } = useContext(LayoutContext)
+
+    const contentForm = () => (
+        <div>
             <div className="mb-8">
-                <label className="mb-2 block" htmlFor="type">
-                    O que você deseja criar?
-                </label>
-                <Select
-                    id="type"
-                    selected={type}
-                    setSelected={setType}
-                    options={[
-                        { name: 'Conteúdo', value: 'content' },
-                        { name: 'Questões', value: 'questions' },
-                        { name: 'Trilha', value: 'roadmap' }
-                    ]}
+                <Label className="mb-2 block" htmlFor="subject">
+                    Matéria
+                </Label>
+                <SubjectSelect />
+            </div>
+            <div className="mb-8">
+                <Label className="mb-2 block" htmlFor="title">
+                    Título
+                </Label>
+                <Input
+                    maxLength={96}
+                    id="title"
+                    name="title"
+                    placeholder="Título do conteúdo"
+                    type="text"
+                    required
                 />
             </div>
-            {FormContent}
-            <Button
-                className="mx-auto mt-8"
-                disabled={!ableToContinue()}
-                onClick={() => {
-                    setOptions({
-                        type: type[0],
-                        title: title,
-                        subject: subject[0],
-                        subjects: subjects,
-                        level: parseInt(level[0])
-                    })
-                }}
-            >
-                Continuar
-            </Button>
+            <div className="mb-8">
+                <LevelSelect />
+            </div>
         </div>
+    )
+    const questionsForm = () => (
+        <div>
+            <div className="mb-8">
+                <Label className="mb-2 block" htmlFor="subject">
+                    Matérias
+                </Label>
+                <SubjectSelect />
+            </div>
+            <div className="mb-8">
+                <LevelSelect />
+            </div>
+        </div>
+    )
+    const roadmapForm = () => (
+        <div>
+            <div className="mb-8">
+                <Label className="mb-2 block" htmlFor="title">
+                    Nome da trilha
+                </Label>
+                <Input type="text" name="title" id="title" />
+            </div>
+            <div className="mb-8">
+                <Label className="mb-2 block" htmlFor="subject">
+                    Matérias
+                </Label>
+                <SubjectSelect />
+            </div>
+            <div className="mb-8">
+                <LevelSelect />
+            </div>
+        </div>
+    )
+
+    return (
+        <form
+            className={form({ hide: !!options.type })}
+            onSubmit={(e) => {
+                e.preventDefault()
+                const formData = new FormData(e.target as HTMLFormElement)
+                const data = Object.fromEntries(formData.entries())
+                setOptions({ ...data })
+                setLayout &&
+                    setLayout({
+                        ...layout,
+                        createHeader: { title: data.title, level: `${data.level}º ano` }
+                    })
+            }}
+        >
+            <div className="mb-8">
+                <Label className="mb-2 block">O que você deseja criar?</Label>
+                <Select
+                    defaultValue="content"
+                    name="type"
+                    onValueChange={(value) => setType(value)}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma opção" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="content">Conteúdo</SelectItem>
+                        <SelectItem value="questions">Questões</SelectItem>
+                        <SelectItem value="roadmap">Trilha</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            {type === 'content' && contentForm()}
+            {type === 'questions' && questionsForm()}
+            {type === 'roadmap' && roadmapForm()}
+            <Button className="mx-auto mt-8 block">Continuar</Button>
+        </form>
     )
 }

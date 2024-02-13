@@ -1,8 +1,8 @@
-import Image from 'next/image'
+import Image, { getImageProps } from 'next/image'
 import Link from 'next/link'
-import Logo from '@/components/ui/Logo'
+import Logo from '@/components/ui/logo'
 import Script from 'next/script'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function Home() {
@@ -10,7 +10,7 @@ export default async function Home() {
     if (user) redirect('/inicio')
 
     return (
-        <div className="absolute z-10 w-full bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
+        <div className="absolute z-10 w-full bg-gradient-to-br from-pasblue via-blue-800 to-pasblue text-white">
             <header className="sticky top-0 z-20 mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6 transition-colors duration-200">
                 <Logo color="white" />
                 <Link href="/login" className="font-bold underline underline-offset-4">
@@ -34,12 +34,24 @@ export default async function Home() {
                             Acessar gratuitamente
                         </Link>
                     </div>
-                    <div className="relative mx-auto h-[80svh] w-auto md:h-auto md:w-[60%] md:self-end">
+                    <div className="relative mx-auto md:w-[60%] md:self-end">
                         <picture className="block h-full md:h-auto md:w-full">
-                            <source media="(min-width: 768px)" srcSet="/assets/images/tv.png" />
-                            <img
+                            <source
+                                media="(min-width: 768px)"
+                                srcSet={
+                                    getImageProps({
+                                        src: '/assets/images/tv.png',
+                                        alt: '',
+                                        width: 1280,
+                                        height: 720
+                                    }).props.srcSet
+                                }
+                            />
+                            <Image
+                                width="393"
+                                height="793"
                                 alt="Imagem da tela do site"
-                                className="block h-full md:h-auto md:w-full"
+                                className="block size-full md:h-auto"
                                 src="/assets/images/smartphone.png"
                             />
                         </picture>
@@ -49,6 +61,7 @@ export default async function Home() {
                             loop
                             muted
                             playsInline
+                            preload="auto"
                             src="/assets/images/download.mp4"
                         ></video>
                     </div>

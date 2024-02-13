@@ -1,6 +1,6 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import startDB from '@/lib/mongoose'
 import topics from '@/models/topic'
 

@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const subjectsId: { [key: string]: string } = {
     portugues: '10',
@@ -59,7 +59,7 @@ const schema = new Schema({
         likes: [
             {
                 date: { type: Date, required: true },
-                userId: { type: String, required: true, unique: true }
+                userId: { type: String, required: true }
             }
         ],
         shares: [

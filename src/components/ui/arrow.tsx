@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronDown, ChevronUp, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 
 interface ArrowProps extends React.HTMLAttributes<HTMLButtonElement> {

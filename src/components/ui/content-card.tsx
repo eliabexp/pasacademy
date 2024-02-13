@@ -8,7 +8,7 @@ interface ContentCardProps {
     name: string
 }
 
-export default function ContentCard({ title, thumb, subject, name }: ContentCardProps) {
+const ContentCard = ({ title, thumb, subject, name }: ContentCardProps) => {
     return (
         <Link
             className="block w-60 p-1 text-center transition-transform duration-300 ease-in-out hover:scale-105"
@@ -26,3 +26,5 @@ export default function ContentCard({ title, thumb, subject, name }: ContentCard
         </Link>
     )
 }
+
+export { ContentCard }

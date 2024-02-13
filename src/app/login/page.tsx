@@ -1,8 +1,8 @@
-import Login from '@/layouts/Login'
-import Logo from '@/components/ui/Logo'
-import auth from '@/lib/auth'
+import { ConfirmEmail, Error, SignIn, SignUp } from '@/layouts/Login'
+import Logo from '@/components/ui/logo'
+import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
+import { headers } from 'next/headers'
 
 export default async function LoginPage({
     searchParams
@@ -24,7 +24,6 @@ export default async function LoginPage({
 
         await fetch(`${process.env.API_URL}/auth`, {
             method: 'POST',
-            credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         }).then((res) => {
@@ -44,26 +43,24 @@ export default async function LoginPage({
         const session = await auth()
         if (session !== false) redirect('/login')
 
-        const tokenName = `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
-        const cookie = cookies().get(tokenName)?.value
+        const cookie = headers().get('cookie') || ''
 
         await fetch(`${process.env.API_URL}/users`, {
             method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json', 'Cookie': `${tokenName}=${cookie}` },
+            headers: { 'Content-Type': 'application/json', cookie },
             body: JSON.stringify(body)
         }).then((res) => {
             res.ok && redirect('/')
-            res.status === 400 && redirect('/login?error=InvalidData')
+            res.status === 400 && redirect('/login?error=CreateAccount')
             redirect('/login')
         })
     }
 
     function Container() {
-        if (user === false) return <Login.SignUp action={signUp} />
-        if (searchParams.confirmarEmail === '') return <Login.ConfirmEmail />
+        if (user === false) return <SignUp action={signUp} />
+        if (searchParams.confirmarEmail === '') return <ConfirmEmail />
         return (
-            <Login.SignIn
+            <SignIn
                 facebookOAuthUrl={facebookOAuthUrl}
                 googleOAuthUrl={googleOAuthUrl}
                 sendEmailAction={sendEmail}
@@ -72,12 +69,12 @@ export default async function LoginPage({
     }
 
     return (
-        <div className="min-h-svh bg-gradient-to-br from-primary via-blue-800 to-primary text-white">
+        <div className="min-h-svh bg-gradient-to-br from-pasblue via-blue-800 to-pasblue text-white">
             <header className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6">
                 <Logo color="white" />
             </header>
             <main className="relative mx-auto mt-4 max-w-xl text-center">
-                {searchParams.error && <Login.Error error={searchParams.error} />}
+                {searchParams.error && <Error error={searchParams.error} />}
                 <Container />
             </main>
         </div>

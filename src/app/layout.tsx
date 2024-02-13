@@ -1,9 +1,10 @@
 import AuthProvider from '@/components/providers/AuthProvider'
 import ThemeProvider from '@/components/providers/ThemeProvider'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { inter } from './fonts'
-import type { Metadata } from 'next'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: {
@@ -18,10 +19,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     return (
         <html lang="pt-br">
-            <body className={`${inter.className} bg-bg dark:bg-bg-dark`}>
+            <body className={`${inter.className}`}>
                 <AuthProvider user={user}>
                     <ThemeProvider>{children}</ThemeProvider>
                 </AuthProvider>
+                <Toaster />
             </body>
         </html>
     )

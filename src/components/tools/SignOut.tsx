@@ -4,7 +4,7 @@ import { LogOut } from 'lucide-react'
 import { useLogout } from '@/hooks/auth'
 import { useRouter } from 'next/navigation'
 
-export default function SignOut() {
+export function SignOut() {
     const router = useRouter()
     return (
         <button

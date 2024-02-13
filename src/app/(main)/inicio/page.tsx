@@ -14,7 +14,7 @@ export default async function Inicio() {
                     case 'contentRow':
                         return <ContentRow key={row.name} row={row} />
                     default:
-                        return null
+                        return <></>
                 }
             })}
         </main>

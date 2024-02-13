@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const schema = new Schema({
     token: { type: String, required: true, unique: true },

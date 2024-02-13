@@ -23,15 +23,23 @@
     "plugins": ["@stylistic"],
     "rules": {
         "@stylistic/indent": ["warn", 4, { "SwitchCase": 1 }],
-        "@stylistic/quotes": ["warn", "single"],
+        "@stylistic/quotes": [
+            "warn",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
         "@stylistic/semi": ["warn", "never"],
         "no-else-return": "error",
         "react/react-in-jsx-scope": "off",
-        "react/jsx-no-target-blank": "off"
-    },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
+        "react/jsx-no-target-blank": "off",
+        "react/prop-types": "off",
+        "tailwindcss/no-custom-classname": [
+            "warn",
+            {
+                "whitelist": ["toaster", "group"]
+            }
+        ]
     }
 }

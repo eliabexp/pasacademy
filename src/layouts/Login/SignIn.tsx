@@ -1,9 +1,11 @@
 'use client'
 
-import Button from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { Input } from '@/components/ui/input'
 
 interface SignInProps {
     facebookOAuthUrl: string
@@ -38,14 +40,14 @@ export default function SignIn({ facebookOAuthUrl, googleOAuthUrl, sendEmailActi
             <span className="block p-4 before:relative before:right-2 before:inline-block before:h-[1px] before:w-1/3 before:border before:align-middle after:relative after:left-2 after:inline-block after:h-[1px] after:w-1/3 after:border after:align-middle">
                 ou
             </span>
-            <form action={sendEmailAction} onSubmit={() => setLoading(true)}>
+            <form action={sendEmailAction} className="text-left" onSubmit={() => setLoading(true)}>
                 <div className="mx-auto mb-12 w-72">
-                    <label htmlFor="email" className="mb-1 ml-2 block text-left">
+                    <Label htmlFor="email" className="mb-2 ml-1 block">
                         E-mail
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                         autoComplete="email"
-                        className="w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-white"
+                        className="border-white"
                         id="email"
                         name="email"
                         placeholder="Digite seu e-mail"
@@ -53,11 +55,7 @@ export default function SignIn({ facebookOAuthUrl, googleOAuthUrl, sendEmailActi
                         type="email"
                     />
                 </div>
-                <Button
-                    className="mx-auto mb-8 bg-white text-black"
-                    disabled={loading}
-                    type="submit"
-                >
+                <Button className="mx-auto mb-8 flex gap-2" disabled={loading}>
                     {loading && <Loader2 className="animate-spin" />}
                     Continuar
                 </Button>

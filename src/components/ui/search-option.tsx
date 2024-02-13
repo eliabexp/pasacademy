@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Atom, BookOpenText, Brain, Brush, CaseSensitive, Fish, FlaskConical, LibraryBig, Map, ScrollText, Sigma, Speech } from 'lucide-react'
+import Link from 'next/link'
 
 interface SearchOptionProps {
     title: string
@@ -8,7 +8,7 @@ interface SearchOptionProps {
     name: string
 }
 
-export default function SearchOption({ title, subjectTitle, subject, name }: SearchOptionProps) {
+const SearchOption = ({ title, subjectTitle, subject, name }: SearchOptionProps) => {
     let Icon
     switch (subject) {
         case 'portugues':
@@ -72,3 +72,5 @@ export default function SearchOption({ title, subjectTitle, subject, name }: Sea
         </Link>
     )
 }
+
+export { SearchOption }

@@ -1,9 +1,9 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { type NextRequest } from 'next/server'
 import { randomUUID } from 'crypto'
-import startDB from '@/lib/mongoose'
+import { redirect } from 'next/navigation'
 import sessions from '@/models/session'
+import startDB from '@/lib/mongoose'
 import tokens from '@/models/token'
 import users from '@/models/user'
 
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
         sameSite: 'lax',
         httpOnly: true,
         secure: isInDevEnvironment ? false : true,
-        name: `${isInDevEnvironment ? '' : '__Secure-'}token`,
+        name: `${isInDevEnvironment ? '' : '__Host-'}token`,
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
         value: session.token
     })

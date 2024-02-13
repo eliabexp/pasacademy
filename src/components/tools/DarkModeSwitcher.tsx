@@ -1,9 +1,9 @@
 'use client'
 
-import { Sun, Moon } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
-export default function DarkModeSwitcher() {
+export function DarkModeSwitcher() {
     const { resolvedTheme, setTheme } = useTheme()
     const darkTheme = resolvedTheme === 'dark'
 

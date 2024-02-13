@@ -1,7 +1,7 @@
 'use client'
 
-import ContentCard from '@/components/ui/ContentCard'
 import { useEffect, useState } from 'react'
+import { ContentCard } from '@/components/ui/content-card'
 
 interface Content {
     id: string
@@ -44,7 +44,7 @@ export default function ContentRow({ row }: ContentRowProps) {
     return (
         <section className="my-4 w-full">
             <h2 className="mx-4 text-2xl font-bold">{row.name}</h2>
-            <ul className="my-2 flex w-full overflow-x-auto overflow-y-hidden">
+            <ul className="my-2 flex w-full overflow-y-hidden">
                 {contents.map((content: any) => (
                     <li className="shrink-0 first:ml-4" key={content.id}>
                         <ContentCard

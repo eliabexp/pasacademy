@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import startDB from '@/lib/mongoose'
 import users from '@/models/user'
 import sessions from '@/models/session'
@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
             account: {},
             profile: {
                 name: user.name,
+                username: user.name.toLowerCase().replace(/\s/g, '').normalize('NFD').replace(/\p{Mn}/gu, ''),
                 gender: user.gender,
                 level: user.level
             }

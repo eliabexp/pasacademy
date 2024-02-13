@@ -1,4 +1,4 @@
-import DarkModeSwitcher from '@/components/tools/DarkModeSwitcher'
+import { DarkModeSwitcher } from '@/components/tools/DarkModeSwitcher'
 import Search from './Search'
 
 export default function Header() {

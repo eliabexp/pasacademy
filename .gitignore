@@ -4,6 +4,12 @@ node_modules
 # environment variables
 .env*.local
 
+# google cloud credentials
+gcloudkey.json
+
 # next.js
 .next
 next-env.d.ts
+
+# pnpm
+pnpm-lock.yaml

@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const accountSchema = new Schema({
     permissions: [
@@ -31,7 +31,7 @@ const profileSchema = new Schema({
     gender: { type: String, enum: ['m', 'f', 'u'], default: 'u' },
     role: { type: String, enum: ['student', 'teacher'], default: 'student' },
     level: { type: Number, min: 1, max: 3, default: 1 },
-    username: { type: String, minlength: 2, maxlength: 22 },
+    username: { type: String, minlength: 2, maxlength: 22, required: true },
     avatar: { type: String },
     createdAt: { type: Date, default: Date.now(), immutable: true },
     lastLoginAt: { type: Date }
@@ -72,12 +72,14 @@ const schema = new Schema({
     study: { type: studySchema }
 }).pre('validate', async function (this: any, next) {
     if (this.isNew) {
-        // Generate user id
+        // Generate user id and username
         do {
-            this.id =
-                '1' +
-                String(Math.floor(Math.random() * 1000000000)).padStart(9, '0')
+            this.id = '1' + String(Math.floor(Math.random() * 1000000000)).padStart(9, '0')
         } while (await this.constructor.findOne({ id: this.id }))
+
+        do {
+            this.profile.username = this.profile.username + String(Math.floor(Math.random() * 1000))
+        } while (await this.constructor.findOne({ 'profile.username': this.profile.username }))
     }
 
     next()
