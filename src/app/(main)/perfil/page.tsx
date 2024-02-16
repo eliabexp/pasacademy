@@ -1,9 +1,9 @@
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function Perfil() {
-    const user = await auth()
-    if (!user) redirect('/login')
+    const session = await auth()
+    if (!session) redirect('/login')
 
     return <main></main>
 }

@@ -3,7 +3,7 @@
 import { createContext } from 'react'
 
 interface AuthProviderProps {
-    user: any | false | null
+    user: User
     children: React.ReactNode
 }
 
@@ -13,7 +13,7 @@ type User = {
     name: string
     username: string
     pronoun: string
-    avatar: string
+    avatar?: string | null
     level: number
     role: string
     permissions: string[]

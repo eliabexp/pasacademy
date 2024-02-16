@@ -1,20 +1,18 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { notFound } from 'next/navigation'
-import { z } from 'zod'
+import { type NextRequest, NextResponse } from 'next/server'
 import { type PipelineStage } from 'mongoose'
-import auth from '@/lib/auth'
+import contents, { type Content } from '@/models/content'
+import { auth } from '@/lib/auth'
+import { notFound } from 'next/navigation'
 import startDB from '@/lib/mongoose'
-import contents from '@/models/content'
-import users from '@/models/user'
+import { z } from 'zod'
 
 interface Query {
-    id?: string
     subject?: string
-    level?: number
     name?: string
+    level?: number
     q?: string
     sort?: 'new' | 'view'
-    status?: 'published' | 'draft' | 'all'
+    status?: 'public' | 'draft' | 'all'
 }
 
 async function getContents(query: Query, multiple: boolean) {
@@ -49,7 +47,6 @@ async function getContents(query: Query, multiple: boolean) {
     pipeline.push(
         {
             $match: {
-                ...query.id && { id: query.id },
                 ...query.subject && { subject: query.subject },
                 ...query.name && { name: query.name },
                 ...query.level && { level: query.level },
@@ -60,28 +57,29 @@ async function getContents(query: Query, multiple: boolean) {
         { $project: { _id: 0 } }
     )
 
-    const data = await contents.aggregate(pipeline).exec()
+    const data: Content[] = await contents.aggregate(pipeline).exec()
 
     if (data.length === 0 && !multiple) return null
     if (!multiple) return data[0]
 
-    return data
+    return {
+        contents: data
+    }
 }
 
 export async function GET(req: NextRequest) {
-    const user = await auth()
+    const session = await auth()
     const params = req.nextUrl.searchParams
     if (params.size === 0) notFound()
 
     const multiple = params.has('multiple')
     const schema = z.object({
-        id: z.string().optional(),
         subject: z.string().optional(),
+        name: z.string().max(48).optional(),
         level: z.coerce.number().int().min(1).max(3).optional(),
-        name: z.string().max(100).optional(),
-        q: z.string().max(100).optional(),
+        q: z.string().max(48).optional(),
         sort: z.enum(['new', 'view']).optional(),
-        status: z.enum(['published', 'draft', 'all']).readonly().default('published')
+        status: z.enum(['public', 'draft', 'all']).default('public')
     })
 
     const parse = schema.safeParse(Object.fromEntries(params.entries()))
@@ -89,23 +87,23 @@ export async function GET(req: NextRequest) {
 
     const query = parse.data
 
-    // Allow access to unpublished content
+    // Restrict access to unpublished content
     const allowedPermissions = ['contentModerator', 'admin']
-    if (user && user.permissions.some((permission) => allowedPermissions.includes(permission))) {
+    if (session && session.permissions.some((permission) => allowedPermissions.includes(permission))) {
         query.status = 'all'
     }
-    else query.status = 'published'
+    else query.status = 'public'
 
     const data = await getContents(query, multiple)
-    if (data) return NextResponse.json(data, { status: 200 })
+    if (!data) notFound()
 
-    notFound()
+    return NextResponse.json(data, { status: 200 })
 }
 
 export async function POST(req: NextRequest) {
     const body = await req.json()
     const schema = z.object({
-        title: z.string().trim().max(100),
+        title: z.string().trim().max(96), // TODO: .regex(/^[a-zA-Z0-9\s,]+$/)
         subject: z.enum([
             'portugues',
             'geografia',
@@ -123,9 +121,9 @@ export async function POST(req: NextRequest) {
             'biologia',
             'obras'
         ]),
-        name: z.string().max(100).trim().toLowerCase(),
-        level: z.number().int().min(1).max(3),
-        content: z.string().trim().min(100).max(16384),
+        level: z.coerce.number().int().min(1).max(3),
+        content: z.string().trim().min(96).max(16384),
+        files: z.array(z.string()).default([]),
         tags: z.array(z.string().min(2).max(32)).default([]),
         exercises: z
             .array(
@@ -145,8 +143,8 @@ export async function POST(req: NextRequest) {
             .default([])
     })
 
-    const user = await auth()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await auth()
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     try {
         const data = schema.parse(body)
@@ -154,15 +152,16 @@ export async function POST(req: NextRequest) {
         // Check if content already exists
         const content = await contents.findOne({
             subject: data.subject,
-            $or: [{ name: data.name }, { title: data.title }]
+            title: data.title
         })
         if (content) return NextResponse.json({ error: 'Content already exists' }, { status: 409 })
 
         // Create content
         await contents.create({
+            authorId: session.id,
             title: data.title,
             subject: data.subject,
-            name: data.name,
+            name: data.title.slice(0, 48).toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, ''),
             level: data.level,
             tags: data.tags,
             content: data.content,
@@ -171,11 +170,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ message: 'Success' }, { status: 201 })
     } catch (err) {
-        console.error(err)
+        console.log(err)
         return NextResponse.json({ error: err }, { status: 400 })
     }
-}
-
-export async function PATCH(req: NextRequest) {
-    const body = await req.json()
 }

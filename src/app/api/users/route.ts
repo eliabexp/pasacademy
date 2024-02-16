@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import startDB from '@/lib/mongoose'
 import users from '@/models/user'
 import sessions from '@/models/session'
@@ -58,15 +58,18 @@ export async function POST(req: NextRequest) {
         if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
         await startDB('authDB')
-        const session = await sessions.findOne({ token: token.value })
+        const sessionData = await sessions.findOne({ token: token.value })
 
         await startDB('platformDB')
-        const userEmail = session.userId
+        const userEmail = sessionData.userId
         const newUser = await users.create({
             email: userEmail,
-            account: {},
+            account: {
+                providers: [sessionData.provider]
+            },
             profile: {
                 name: user.name,
+                username: user.name.toLowerCase().normalize('NFD').replace(/[^a-z0-9_.]/g, '').slice(0, 22),
                 gender: user.gender,
                 level: user.level
             }

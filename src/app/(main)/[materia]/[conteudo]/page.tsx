@@ -1,11 +1,12 @@
-import { Body, Title } from '@/layouts/Content'
-import { notFound } from 'next/navigation'
+import { Body, Title } from '@/components/ui/content'
 import { marked, parseInline, use } from 'marked'
+import { headers } from 'next/headers'
 import { htmlEscape } from 'escape-goat'
 import katex from 'marked-katex-extension'
+import { notFound } from 'next/navigation'
 
 interface Content {
-    params: { [key: string]: string }
+    params: { materia: string; conteudo: string }
 }
 
 use(katex({ output: 'mathml' }))
@@ -27,7 +28,7 @@ use({
             return `
                 <figure>
                     <img src="${href}" alt="${text}">
-                    ${title ? `<figcaption>${title}</figcaption>` : ''}
+                    ${text ? `<figcaption>${text}</figcaption>` : ''}
                 </figure>
             `
         },
@@ -39,19 +40,20 @@ use({
     }
 })
 
-export default async function Conteudo({ params }: Content) {
-    const { materia, conteudo } = params
+export default async function Conteudo({ params: { materia, conteudo } }: Content) {
+    const cookie = headers().get('cookie') || ''
 
     const content = await fetch(
         process.env.API_URL + `/contents?subject=${materia}&name=${conteudo}`,
-        { credentials: 'same-origin', next: { revalidate: 600 } }
+        { headers: { cookie }, next: { revalidate: 600 } }
     ).then(async (res) => {
         if (!res.ok) notFound()
 
         return await res.json()
     })
 
-    const text = htmlEscape(content.content) // Sanitize
+    let text = htmlEscape(content.content)
+    text = text.replace(/^&gt; /gm, '>') // recover > to blockquote tags work properly
     const __html = marked(text) as string // Parse
 
     return (

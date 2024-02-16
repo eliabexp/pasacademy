@@ -1,11 +1,12 @@
 const nextConfig = {
     headers() {
         const CSP = [
-            'default-src \'self\'',
-            'img-src *',
-            'font-src *',
-            'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\'',
-            'style-src * \'unsafe-inline\''
+            "default-src 'self'",
+            "connect-src 'self' storage.googleapis.com",
+            "font-src 'self'",
+            'img-src * pasacademy.storage.googleapis.com blob: data:',
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'"
         ]
 
         const headers = [
@@ -22,11 +23,11 @@ const nextConfig = {
     images: {
         remotePatterns: [
             {
-                hostname: 'picsum.photos',
+                hostname: 'pasacademy.storage.googleapis.com',
                 protocol: 'https'
             },
             {
-                hostname: 'upload.wikimedia.org',
+                hostname: 'picsum.photos',
                 protocol: 'https'
             }
         ]

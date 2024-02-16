@@ -1,26 +1,116 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { randomUUID } from 'crypto'
-import { z } from 'zod'
+import { type NextRequest, NextResponse } from 'next/server'
 import { createTransport } from 'nodemailer'
+import { cookies } from 'next/headers'
+import { randomUUID } from 'crypto'
+import { render } from '@react-email/render'
+import { redirect } from 'next/navigation'
+import { z } from 'zod'
+import MagicLink from '@/components/emails/magicLink'
 import startDB from '@/lib/mongoose'
 import sessions from '@/models/session'
 import tokens from '@/models/token'
-import users, { type User } from '@/models/user'
+import users from '@/models/user'
+import { auth } from '@/lib/auth'
 
-function generateEmail(url: string, user: User | null) {
-    // Generate email body
-    const pronouns: { [key: string]: string } = { m: 'o', f: 'a', u: 'o(a)' }
+const FacebookOAuth = async (code: string) => {
+    const accessToken = await fetch(
+        `https://graph.facebook.com/v18.0/oauth/access_token?client_id=${process.env.FACEBOOK_CLIENT_ID}&redirect_uri=${process.env.API_URL}/auth&client_secret=${process.env.FACEBOOK_CLIENT_SECRET}&code=${code}`,
+        { cache: 'no-cache' }
+    )
+        .then((res) => {
+            if(!res.ok) return null
+            return res.json()
+        })
+        .then((res) => res.access_token)
 
-    return `
-        <body style="color: black;">
-            <h1>Entrar no Pas Academy</h1>
-            <h2>${user ? `Olá ${user.profile.name},` : 'Seja bem-vindo(a)'}</h2>
-            <p style="font-weight: bold;">${user ? `Bem-vind${pronouns[user.profile.gender]} de volta!` : 'Que bom te conhecer!'} Para fazer login é só clicar no botão abaixo</p>
-            <a href="${url}" style="background-color: #1912a1; border-radius: 16px; color: white; display: block; font-weight: bold; margin: 16px 0; padding: 12px 0; text-align: center; text-decoration: none; width: 200px;">${user ? 'Entrar' : 'Criar conta'}</a>
-            <p>Esse link é válido por 12 horas.</p>
-            <p>Bons estudos! 😉</p>
-        </body>
-    `
+    if (!accessToken) return null
+
+    return await fetch(`https://graph.facebook.com/v18.0/me?fields=email&access_token=${accessToken}`, {
+        cache: 'no-cache'
+    }).then((res) => res.json())
+}
+
+const GoogleOAuth = async (code: string) => {
+    const accessToken = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `code=${code}&client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&redirect_uri=${process.env.API_URL}/auth&grant_type=authorization_code`
+    })
+        .then((res) => {
+            if (!res.ok) return null
+            return res.json()
+        })
+        .then((res) => res.access_token)
+
+    if (!accessToken) return null
+
+    return await fetch(
+        `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${accessToken}`,
+        { cache: 'no-cache' }
+    ).then((res) => res.json())
+}
+
+export async function GET(req: NextRequest) {
+    const params = req.nextUrl.searchParams
+    const code = params.get('code')
+    const emailToken = params.get('token')
+    const state = params.get('state')
+    if (!code && !emailToken) redirect('/login')
+
+    let user
+    let provider
+
+    if (code && state === 'facebook') {
+        user = await FacebookOAuth(code)
+        provider = 'facebook'
+    }
+    else if (code && state === 'google') {
+        user = await GoogleOAuth(code)
+        provider = 'google'
+    }
+    else if (emailToken) {
+        user = await tokens.findOneAndDelete({ token: emailToken, expires: { $gt: Date.now() } })
+    }
+
+    if (!user || !user.email) redirect('/login')
+
+    // Sync providers
+    const session = await auth()
+    if (session) {
+        await startDB('platformDB')
+        const userData = await users.findOne({ id: session.id })
+        if (!userData) redirect('/login')
+
+        await users.findOneAndUpdate({ id: userData.id }, { $addToSet: { 'account.providers': provider } })
+
+        redirect('/perfil')
+    }
+
+    // Get user id if exists
+    await startDB('platformDB')
+    const userData = await users.findOne({ email: user.email })
+
+    // Create session
+    await startDB('authDB')
+    const newSession = await sessions.create({
+        token: randomUUID(),
+        userId: userData ? userData.id : user.email,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+        ...provider && { provider }
+    })
+
+    const isInDevEnvironment = process.env.NODE_ENV === 'development' // disable https only cookies in development environment
+
+    cookies().set({
+        sameSite: 'lax',
+        httpOnly: true,
+        secure: isInDevEnvironment ? false : true,
+        name: `${isInDevEnvironment ? '' : '__Host-'}token`,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+        value: newSession.token
+    })
+
+    redirect('/login')
 }
 
 export async function POST(req: NextRequest) {
@@ -47,8 +137,11 @@ export async function POST(req: NextRequest) {
         const token = randomUUID()
         await tokens.create({ token, email })
 
+        const url = `${process.env.API_URL}/auth?token=${token}`
+
+        const emailBody = render(MagicLink({ url, user }))
+
         // Send email
-        const url = `${process.env.API_URL}/auth/callback?token=${token}`
         const transport = createTransport({
             host: process.env.SMTP_HOST,
             port: process.env.SMTP_PORT,
@@ -61,7 +154,7 @@ export async function POST(req: NextRequest) {
             from: 'Pas Academy <contato@pasacademy.com.br>',
             to: [email],
             subject: 'Faça login no Pas Academy',
-            html: generateEmail(url, user)
+            html: emailBody
         })
 
         return NextResponse.json({ message: 'Success' }, { status: 200 })
@@ -71,7 +164,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-    const cookieName = `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
+    const cookieName = `${process.env.NODE_ENV === 'development' ? '' : '__Host-'}token`
     const sessionToken = req.cookies.get(cookieName)
     if (!sessionToken)
         return NextResponse.json({ error: 'No session token found' }, { status: 401 })

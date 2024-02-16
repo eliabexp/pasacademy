@@ -1,8 +1,12 @@
 # dependencies
 node_modules
+package-lock.json
 
 # environment variables
 .env*.local
+
+# google cloud credentials
+gcloudkey.json
 
 # next.js
 .next

@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const subjectsId: { [key: string]: string } = {
     portugues: '10',
@@ -26,10 +26,10 @@ const schema = new Schema({
     level: { type: Number, min: 1, max: 3, required: true },
     weight: { type: Number, min: 0, max: 100 },
     createdAt: { type: Date, default: Date.now() },
-    author: { type: String, default: 'Pas Academy' },
+    authorId: { type: String, required: true },
     thumb: { type: String },
     title: { type: String, maxLength: 96, required: true },
-    status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+    status: { type: String, enum: ['draft', 'public'], default: 'draft' },
     tags: [{ type: String }],
     content: { type: String, required: true },
     exercises: [
@@ -59,7 +59,7 @@ const schema = new Schema({
         likes: [
             {
                 date: { type: Date, required: true },
-                userId: { type: String, required: true, unique: true }
+                userId: { type: String, required: true }
             }
         ],
         shares: [

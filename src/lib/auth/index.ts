@@ -1,16 +1,16 @@
-import { cookies } from 'next/headers'
-import startDB from '@/lib/mongoose'
-import sessions from '@/models/session'
 import users, { type User } from '@/models/user'
+import { cookies } from 'next/headers'
+import sessions from '@/models/session'
+import startDB from '@/lib/mongoose'
 
 function getSessionToken() {
-    const token = cookies().get(`${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`)
-    if (!token) return null
+    const token = cookies().get(`${process.env.NODE_ENV === 'development' ? '' : '__Host-'}token`)
+    if (!token) return
 
     return token.value
 }
 
-export default async function auth() {
+export async function auth() {
     const token = getSessionToken()
     if (!token) return null
 

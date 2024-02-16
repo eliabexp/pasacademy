@@ -1,9 +1,10 @@
 import AuthProvider from '@/components/providers/AuthProvider'
 import ThemeProvider from '@/components/providers/ThemeProvider'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { inter } from './fonts'
-import type { Metadata } from 'next'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: {
@@ -14,14 +15,15 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const user = await auth()
+    const session = await auth()
 
     return (
         <html lang="pt-br">
-            <body className={`${inter.className} bg-bg dark:bg-bg-dark`}>
-                <AuthProvider user={user}>
+            <body className={`${inter.className}`}>
+                <AuthProvider user={session}>
                     <ThemeProvider>{children}</ThemeProvider>
                 </AuthProvider>
+                <Toaster />
             </body>
         </html>
     )

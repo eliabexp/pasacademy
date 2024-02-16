@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { notFound } from 'next/navigation'
-import { z } from 'zod'
-import startDB from '@/lib/mongoose'
 import questions from '@/models/question'
+import startDB from '@/lib/mongoose'
+import { z } from 'zod'
 
 interface Query {
     id?: string

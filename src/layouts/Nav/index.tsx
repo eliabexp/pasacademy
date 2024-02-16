@@ -1,8 +1,8 @@
 import { Home, LibraryBig, ListTodo, Plus, Route, User, Users } from 'lucide-react'
+import Menu from './Menu'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSession } from '@/hooks/auth'
-import Menu from './Menu'
 
 interface NavProps {
     page: string
@@ -54,7 +54,7 @@ export default function Nav({ page, setPage }: NavProps) {
             url: 'criar',
             icon: <Plus />,
             iconActive: <Plus />,
-            hide: !user
+            hide: !user || !user.permissions.some((p) => ['admin', 'createContent'].includes(p))
         }
     ]
 
@@ -66,7 +66,7 @@ export default function Nav({ page, setPage }: NavProps) {
     }, [pathName])
 
     return (
-        <nav className="fixed bottom-0 z-10 flex h-14 w-full items-center text-black dark:bg-bg-dark dark:text-white md:static md:h-full md:min-h-[calc(100svh-4rem)] md:w-auto md:shrink-0 md:basis-60 md:flex-col md:gap-1 md:px-2 md:py-8">
+        <nav className="fixed bottom-0 z-10 flex h-14 w-full items-center bg-background md:static md:h-full md:min-h-[calc(100svh-4rem)] md:w-auto md:shrink-0 md:basis-60 md:flex-col md:gap-1 md:px-2 md:py-8">
             <Menu links={links} page={page} />
         </nav>
     )

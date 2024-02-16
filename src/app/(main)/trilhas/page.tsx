@@ -1,7 +1,7 @@
 'use client'
 
-import { useSession } from '@/hooks/auth'
 import { LoginMessage } from '@/layouts/Trilhas'
+import { useSession } from '@/hooks/auth'
 
 export default function Trilhas() {
     const user = useSession()

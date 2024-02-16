@@ -1,4 +1,4 @@
-import { model, models, InferSchemaType, Schema } from 'mongoose'
+import { InferSchemaType, model, models, Schema } from 'mongoose'
 
 const subjectsId: { [key: string]: number } = {
     portugues: 10,
@@ -25,7 +25,7 @@ const schema = new Schema({
     year: { type: Number, required: true },
     difficulty: { type: Number, min: 1, max: 3 },
     institution: { type: String, required: true },
-    type: { type: String, enum: ['a', 'b', 'c', 'd'], required: true },
+    type: { type: String, enum: ['singleChoice', 'multipleChoice', 'numeric'], required: true },
     tags: [{ type: String }],
     content: { type: String },
     image: { type: String },

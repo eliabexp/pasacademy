@@ -1,6 +1,6 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import auth from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import startDB from '@/lib/mongoose'
 import topics from '@/models/topic'
 
@@ -23,7 +23,7 @@ interface Slider {
 export async function GET(req: NextRequest) {
     await startDB('platformDB')
 
-    const user = await auth()
+    const session = await auth()
 
     const rows: ContentRow[] = []
     const slider: Slider[] = []
@@ -31,9 +31,9 @@ export async function GET(req: NextRequest) {
     const topicsArray = await topics.find({}).select({ _id: 0 }).lean()
     topicsArray
         .filter((topic) => {
-            if (user) {
+            if (session) {
                 if (topic.authRequired === false) return false 
-                if (topic.level && user.level !== topic.level) return false // Level filter
+                if (topic.level && session.level !== topic.level) return false // Level filter
             } else if (topic.authRequired) {
                 return false
             }

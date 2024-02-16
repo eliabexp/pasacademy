@@ -1,6 +1,6 @@
 'use client'
 
-import NavButton from '@/components/ui/NavButton'
+import NavButton from '@/components/ui/nav-button'
 
 interface MenuProps {
     links: LinksList[]

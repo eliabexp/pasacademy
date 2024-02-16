@@ -1,8 +1,18 @@
 'use client'
 
-import Button from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select'
 
 export default function SignUp({ action }: { action: (formData: FormData) => void }) {
     const [loading, setLoading] = useState(false)
@@ -14,14 +24,14 @@ export default function SignUp({ action }: { action: (formData: FormData) => voi
                 <br />
                 Pas Academy!
             </h1>
-            <form action={action} onSubmit={() => setLoading(true)}>
+            <form action={action} className="text-left" onSubmit={() => setLoading(true)}>
                 <div className="mx-auto mb-6 w-72">
-                    <label htmlFor="name" className="mb-1 ml-2 block text-left">
+                    <Label htmlFor="name" className="mb-2 ml-1 block">
                         Como você quer ser chamado(a)?
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                         autoComplete="name"
-                        className="w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-white"
+                        className="border-white"
                         id="name"
                         minLength={2}
                         maxLength={22}
@@ -33,44 +43,37 @@ export default function SignUp({ action }: { action: (formData: FormData) => voi
                         required
                     />
                 </div>
+                <RadioGroup className="mx-auto mb-6 w-72" name="gender">
+                    <Label className="mb-2 ml-1 block" htmlFor="gender">Gênero (opcional)</Label>
+                    <div className="flex items-center gap-3">
+                        <RadioGroupItem id="m" value="m" />
+                        <Label htmlFor="m">Masculino</Label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <RadioGroupItem id="f" value="f" />
+                        <Label htmlFor="f">Feminino</Label>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <RadioGroupItem id="u" value="u" />
+                        <Label htmlFor="u">Não selecionar</Label>
+                    </div>
+                </RadioGroup>
                 <div className="mx-auto mb-6 w-72">
-                    <p className="mb-1 ml-2 block text-left">Gênero (opcional)</p>
-                    <div className="flex items-center gap-3">
-                        <input type="radio" name="gender" id="m" value="m" />
-                        <label htmlFor="m">Masculino</label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <input type="radio" name="gender" id="f" value="f" />
-                        <label htmlFor="f">Feminino</label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <input type="radio" name="gender" id="u" value="u" defaultChecked />
-                        <label htmlFor="u">Não selecionar</label>
-                    </div>
-                </div>
-                <div className="mx-auto mb-6 w-72">
-                    <label htmlFor="level" className="mb-1 ml-2 block text-left">
+                    <Label className="mb-2 ml-1 block">
                         Qual etapa do PAS você vai fazer esse ano?
-                    </label>
-                    <select
-                        className="w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-white"
-                        id="level"
-                        name="level"
-                        required
-                    >
-                        <option value="" hidden disabled>
-                            Selecione uma opção
-                        </option>
-                        <option value="1">1ª etapa</option>
-                        <option value="2">2ª etapa</option>
-                        <option value="3">3ª etapa</option>
-                    </select>
+                    </Label>
+                    <Select name="level" required>
+                        <SelectTrigger className="border-white">
+                            <SelectValue placeholder="Selecione uma opção" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="1">1ª etapa</SelectItem>
+                            <SelectItem value="2">2ª etapa</SelectItem>
+                            <SelectItem value="3">3ª etapa</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
-                <Button
-                    className="mx-auto mb-8 bg-white text-black"
-                    disabled={loading}
-                    type="submit"
-                >
+                <Button className="mx-auto mb-8 flex gap-2" disabled={loading}>
                     {loading && <Loader2 className="animate-spin" />}
                     Criar conta
                 </Button>
