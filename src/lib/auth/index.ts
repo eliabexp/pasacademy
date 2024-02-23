@@ -15,11 +15,12 @@ export async function auth() {
     if (!token) return null
 
     await startDB('authDB')
-    const session = await sessions.findOneAndUpdate(
-        { token: token },
-        { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) }
-    )
+    const session = await sessions.findOne({ token: token, expires: { $gt: new Date() } })
     if (!session) return null
+    if (!session.authorized) return false
+
+    // Update session
+    await sessions.updateOne({ token }, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) })
 
     await startDB('platformDB')
     const user: User | null = await users.findOne({ id: session.userId })

@@ -2,6 +2,7 @@
 
 import { useContext, useState } from 'react'
 import { LayoutContext } from '@/app/(main)/layout'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -25,12 +26,18 @@ const form = tv({
     }
 })
 
-interface Options {
-    type?: string | undefined
-    title?: string | undefined
-    subject?: string | undefined
-    subjects?: string[] | undefined
-    level?: number | undefined
+type Options = {
+    type?: string
+} | {
+    type: 'content'
+    title: string
+    subject: string
+    level: number
+} | {
+    type: 'question' | 'roadmap'
+    title: string
+    subjects: string[]
+    level: number
 }
 
 interface FormProps {
@@ -54,7 +61,6 @@ function SubjectSelect({ multiple }: { multiple?: boolean }) {
                         <SelectItem value="portugues">Português</SelectItem>
                         <SelectItem value="ingles">Inglês</SelectItem>
                         <SelectItem value="espanhol">Espanhol</SelectItem>
-                        <SelectItem value="frances">Francês</SelectItem>
                     </SelectGroup>
                     <SelectGroup>
                         <SelectLabel>Ciências Humanas</SelectLabel>
@@ -195,6 +201,12 @@ export default function CreateForm({ options, setOptions }: FormProps) {
             {type === 'questions' && questionsForm()}
             {type === 'roadmap' && roadmapForm()}
             <Button className="mx-auto mt-8 block">Continuar</Button>
+            <p className="mt-16 text-center text-sm">
+                Primeira vez criando conteúdo no PAS Academy?{' '}
+                <Link className="underline underline-offset-2" href="#">
+                    Confira nosso tutorial!
+                </Link>
+            </p>
         </form>
     )
 }

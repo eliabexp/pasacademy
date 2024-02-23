@@ -24,7 +24,7 @@ export default async function Home() {
                             Uma plataforma completa sobre o PAS UnB.
                         </h1>
                         <p className="mb-16 leading-6 md:mb-24">
-                            No Pas Academy você tem acesso completo a um material didático criado
+                            No PAS Academy você tem acesso completo a um material didático criado
                             para otimizar suas preciosas horas de estudo. Tudo de graça!
                         </p>
                         <Link
@@ -40,7 +40,7 @@ export default async function Home() {
                                 media="(min-width: 768px)"
                                 srcSet={
                                     getImageProps({
-                                        src: '/assets/images/tv.png',
+                                        src: '/assets/images/inicio-pc.png',
                                         alt: '',
                                         width: 1280,
                                         height: 720
@@ -52,24 +52,15 @@ export default async function Home() {
                                 height="793"
                                 alt="Imagem da tela do site"
                                 className="block size-full md:h-auto"
-                                src="/assets/images/smartphone.png"
+                                src="/assets/images/inicio.png"
                             />
                         </picture>
-                        <video
-                            className="absolute left-[5%] top-[3%] -z-10 h-[95%] w-[90%] object-cover md:left-[0.5%] md:top-[1%] md:h-[87%] md:w-[99%]"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="auto"
-                            src="/assets/images/download.mp4"
-                        ></video>
                     </div>
                 </section>
                 <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src="/assets/images/content.jpg"
+                        src="/assets/images/content.png"
                         alt="Captura da tela de questões"
                         width="1280"
                         height="720"
@@ -88,7 +79,7 @@ export default async function Home() {
                 <section className="px-6 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src="/assets/images/content.jpg"
+                        src="/assets/images/content.png"
                         alt="Captura da tela de conteúdos"
                         width="1280"
                         height="720"
@@ -107,7 +98,7 @@ export default async function Home() {
                 <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
-                        src="/assets/images/content.jpg"
+                        src="/assets/images/content.png"
                         alt="Captura da tela de trilhas"
                         width="1280"
                         height="720"
@@ -185,15 +176,15 @@ export default async function Home() {
                         </ul>
                     </div>
                 </div>
-                <span className="m-2 select-none text-center">Pas Academy © 2024</span>
+                <span className="m-2 block select-none text-center">PAS Academy © 2024</span>
             </footer>
             <Script id="header-bg">{`
                 const header = document.querySelector("header")
                 document.addEventListener('scroll', () => {
                     if (window.scrollY > 0) {
-                        header.classList.add('bg-black', 'bg-opacity-60')
+                        header.classList.add('bg-pasblue')
                     } else {
-                        header.classList.remove('bg-black', 'bg-opacity-60')
+                        header.classList.remove('bg-pasblue')
                     }
                 })
             `}</Script>

@@ -70,6 +70,11 @@
     * {
         @apply border-border;
     }
+
+    html {
+        @apply scroll-smooth;
+    }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -77,6 +82,6 @@
 
 @layer components {
     .language-formula {
-        @apply bg-hover block w-fit rounded-md border px-4 py-2 font-[inherit];
+        @apply block w-fit rounded-md border bg-hover px-4 py-2 font-[inherit];
     }
 }

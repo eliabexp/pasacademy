@@ -17,7 +17,7 @@ export default function Privacidade() {
             <Title title="Política de privacidade" subtitle="Data de vigência: 28/12/2023" />
             <Body>
                 <p>
-                    Estamos felizes em ver você aqui no Pas Academy! Neste texto você vai encontrar
+                    Estamos felizes em ver você aqui no PAS Academy! Neste texto você vai encontrar
                     a descrição de quais de seus dados são coletados ao usar o site, bem como a
                     maneira como eles são coletados, armazenados, protegidos e exibidos dentro da
                     plataforma
@@ -39,9 +39,9 @@ export default function Privacidade() {
                         <tr>
                             <td>Nome</td>
                             <td>
-                                O seu nome é o nome que será exibido no seu perfil do Pas Academy,
+                                O seu nome é o nome que será exibido no seu perfil do PAS Academy,
                                 ele é usado para ser exibido no seu perfil e pode ser usado na sua
-                                interface como uma forma de chamar você, o Pas Academy não exige que
+                                interface como uma forma de chamar você, o PAS Academy não exige que
                                 você use seu nome real, apenas recomenda para que ele seja usado
                                 como forma de tratamento.
                             </td>

@@ -69,7 +69,7 @@ export default async function LoginPage({
     }
 
     return (
-        <div className="min-h-svh bg-gradient-to-br from-pasblue via-blue-800 to-pasblue text-white">
+        <div className="dark min-h-svh bg-gradient-to-br from-pasblue via-blue-800 to-pasblue text-white">
             <header className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6">
                 <Logo color="white" />
             </header>

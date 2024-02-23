@@ -35,9 +35,6 @@ const SearchOption = ({ title, subjectTitle, subject, name }: SearchOptionProps)
         case 'espanhol':
             Icon = BookOpenText
             break
-        case 'frances':
-            Icon = BookOpenText
-            break
         case 'literatura':
             Icon = BookOpenText
             break

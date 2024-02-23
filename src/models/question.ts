@@ -9,7 +9,6 @@ const subjectsId: { [key: string]: number } = {
     artes: 15,
     ingles: 16,
     espanhol: 17,
-    frances: 18,
     literatura: 19,
     matematica: 20,
     fisica: 21,
@@ -17,6 +16,35 @@ const subjectsId: { [key: string]: number } = {
     biologia: 23,
     obras: 30
 }
+
+const interactionsSchema = new Schema({
+    comments: [
+        {
+            userId: { type: String, required: true },
+            comment: { type: String, required: true },
+            date: { type: Date, required: true },
+            id: { type: String, required: true }
+        }
+    ],
+    likes: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true, unique: true }
+        }
+    ],
+    shares: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true }
+        }
+    ],
+    views: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true }
+        }
+    ]
+})
 
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
@@ -60,34 +88,7 @@ const schema = new Schema({
             }
         }
     ],
-    interactions: {
-        comments: [
-            {
-                userId: { type: String, required: true },
-                comment: { type: String, required: true },
-                date: { type: Date, required: true },
-                id: { type: String, required: true }
-            }
-        ],
-        likes: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true, unique: true }
-            }
-        ],
-        shares: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true }
-            }
-        ],
-        views: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true }
-            }
-        ]
-    }
+    interactions: interactionsSchema
 }).pre('validate', async function (this: any, next) {
     if (this.isNew) {
         // Generate question id

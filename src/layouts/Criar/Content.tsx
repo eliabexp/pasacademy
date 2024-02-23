@@ -16,12 +16,18 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
-interface Options {
-    type?: string | undefined
-    title?: string | undefined
-    subject?: string | undefined
-    subjects?: string[] | undefined
-    level?: number | undefined
+type Options = {
+    type?: string
+} | {
+    type: 'content'
+    title: string
+    subject: string
+    level: number
+} | {
+    type: 'question' | 'roadmap'
+    title: string
+    subjects: string[]
+    level: number
 }
 
 interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -37,16 +43,23 @@ function publishContent(options: Options, output: string) {
         return `![${alt}](file${files.length - 1})`
     })
 
-    fetch('/api/contents', {
+    return fetch('/api/contents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...options, content, files })
     }).then((res) => {
-        if (!res.ok)
+        if (!res.ok) {
+            if (res.status === 409)
+                return toast.error('Conteúdo já existe', {
+                    description:
+                        'Esse conteúdo já existe, tente enviá-lo novamente utilizando um nome diferente.'
+                })
+
             return toast.error('Algo deu errado', {
                 description:
                     'Poxa, alguma coisa deu errado na hora de enviar o seu conteúdo, poderia revisar e tentar de novo? 🥺'
             })
+        }
 
         window.sessionStorage.removeItem('editorContent')
 
@@ -68,7 +81,7 @@ export default function CreateContent({ className, options, setOptions }: Conten
         <div className={className}>
             <Editor className="mx-auto mb-8" editable setOutput={setOutput} />
             <div className="mx-auto flex max-w-2xl justify-end gap-4">
-                <Button onClick={() => setOptions({ ...options, type: '' })} variant="ghost">
+                <Button onClick={() => setOptions({})} variant="ghost">
                     Voltar
                 </Button>
                 <AlertDialog>
@@ -90,7 +103,7 @@ export default function CreateContent({ className, options, setOptions }: Conten
                             <AlertDialogAction
                                 onClick={() => {
                                     setLoading(true)
-                                    publishContent(options, output)
+                                    publishContent(options, output).finally(() => setLoading(false))
                                     router.push('/perfil')
                                 }}
                             >

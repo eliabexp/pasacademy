@@ -1,17 +1,21 @@
+import type { Metadata, Viewport } from 'next'
 import AuthProvider from '@/components/providers/AuthProvider'
 import ThemeProvider from '@/components/providers/ThemeProvider'
 import { auth } from '@/lib/auth'
 import { inter } from './fonts'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
-import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: {
-        template: '%s - Pas Academy',
-        default: 'Pas Academy'
+        template: '%s - PAS Academy',
+        default: 'PAS Academy'
     },
     description: 'Uma plataforma completa sobre o PAS UnB.'
+}
+
+export const viewport: Viewport = {
+    maximumScale: 1
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     return (
         <html lang="pt-br">
-            <body className={`${inter.className}`}>
+            <body className={inter.className}>
                 <AuthProvider user={session}>
                     <ThemeProvider>{children}</ThemeProvider>
                 </AuthProvider>

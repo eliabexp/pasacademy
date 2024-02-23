@@ -22,7 +22,7 @@ export default function SignUp({ action }: { action: (formData: FormData) => voi
             <h1 className="mb-8 text-center text-3xl font-bold">
                 Seja bem-vindo ao
                 <br />
-                Pas Academy!
+                PAS Academy!
             </h1>
             <form action={action} className="text-left" onSubmit={() => setLoading(true)}>
                 <div className="mx-auto mb-6 w-72">

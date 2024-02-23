@@ -7,21 +7,27 @@ import startDB from '@/lib/mongoose'
 import users from '@/models/user'
 import sessions from '@/models/session'
 
+const isTeacher = (email: string) => {
+    const teacherEmails = [
+        '@edu.se.df.gov.br'
+    ]
+
+    return teacherEmails.some(teacherEmail => email.endsWith(teacherEmail))
+}
+
 export async function GET(req: NextRequest) {
     const params = req.nextUrl.searchParams
     const schema = z.object({
-        id: z.string(),
         username: z.string().optional()
     })
 
     const data = schema.safeParse(params)
-    if (!data.success) return notFound()
+    if (!data.success) notFound()
 
     const session = await auth()
 
     let query = {}
-    if (data.data.id) query = { id: data.data.id }
-    else if (data.data.username) query = { username: data.data.username }
+    if (data.data.username) query = { username: data.data.username }
     else if (session) query = { id: session.id }
     else notFound()
 
@@ -71,7 +77,8 @@ export async function POST(req: NextRequest) {
                 name: user.name,
                 username: user.name.toLowerCase().normalize('NFD').replace(/[^a-z0-9_.]/g, '').slice(0, 22),
                 gender: user.gender,
-                level: user.level
+                level: user.level,
+                role: isTeacher(userEmail) ? 'teacher' : 'student'
             }
         })
 

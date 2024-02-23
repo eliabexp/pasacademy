@@ -113,7 +113,6 @@ export async function POST(req: NextRequest) {
             'artes',
             'ingles',
             'espanhol',
-            'frances',
             'literatura',
             'matematica',
             'fisica',
@@ -157,7 +156,7 @@ export async function POST(req: NextRequest) {
         if (content) return NextResponse.json({ error: 'Content already exists' }, { status: 409 })
 
         // Create content
-        await contents.create({
+        const newContent = await contents.create({
             authorId: session.id,
             title: data.title,
             subject: data.subject,
@@ -166,9 +165,14 @@ export async function POST(req: NextRequest) {
             tags: data.tags,
             content: data.content,
             exercises: data.exercises
+        }).then((doc) => {
+            const { _id, __v, ...rest } = doc.toObject()
+            return { ...rest }
         })
 
-        return NextResponse.json({ message: 'Success' }, { status: 201 })
+        if (!newContent) return NextResponse.json({ error: 'Error creating content' }, { status: 500 })
+
+        return NextResponse.json(newContent, { status: 201, headers: { Location: `/${newContent.subject}/${newContent.name}` } })
     } catch (err) {
         console.log(err)
         return NextResponse.json({ error: err }, { status: 400 })

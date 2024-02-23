@@ -151,9 +151,9 @@ export async function POST(req: NextRequest) {
             }
         })
         await transport.sendMail({
-            from: 'Pas Academy <contato@pasacademy.com.br>',
+            from: 'PAS Academy <contato@pasacademy.com.br>',
             to: [email],
-            subject: 'Faça login no Pas Academy',
+            subject: 'Faça login no PAS Academy',
             html: emailBody
         })
 

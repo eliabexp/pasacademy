@@ -9,7 +9,6 @@ const subjectsId: { [key: string]: string } = {
     artes: '15',
     ingles: '16',
     espanhol: '17',
-    frances: '18',
     literatura: '19',
     matematica: '20',
     fisica: '21',
@@ -18,13 +17,41 @@ const subjectsId: { [key: string]: string } = {
     obras: '30'
 }
 
+const interactionsSchema = new Schema({
+    comments: [
+        {
+            userId: { type: String, required: true },
+            comment: { type: String, required: true },
+            date: { type: Date, required: true },
+            id: { type: String, required: true }
+        }
+    ],
+    likes: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true }
+        }
+    ],
+    shares: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true }
+        }
+    ],
+    views: [
+        {
+            date: { type: Date, required: true },
+            userId: { type: String, required: true }
+        }
+    ]
+})
+
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, lowercase: true, required: true, index: true },
     subject: { type: String, enum: Object.keys(subjectsId), required: true },
     subjectTitle: { type: String, required: true },
     level: { type: Number, min: 1, max: 3, required: true },
-    weight: { type: Number, min: 0, max: 100 },
     createdAt: { type: Date, default: Date.now() },
     authorId: { type: String, required: true },
     thumb: { type: String },
@@ -32,49 +59,7 @@ const schema = new Schema({
     status: { type: String, enum: ['draft', 'public'], default: 'draft' },
     tags: [{ type: String }],
     content: { type: String, required: true },
-    exercises: [
-        {
-            question: { type: String, required: true },
-            image: { type: String },
-            type: { type: String, enum: ['a', 'b', 'c'], required: true },
-            alternatives: [
-                {
-                    text: { type: String, required: true },
-                    isCorrect: { type: Boolean, required: true },
-                    explanation: { type: String }
-                }
-            ],
-            difficulty: { type: Number, min: 1, max: 3 }
-        }
-    ],
-    interactions: {
-        comments: [
-            {
-                userId: { type: String, required: true },
-                comment: { type: String, required: true },
-                date: { type: Date, required: true },
-                id: { type: String, required: true }
-            }
-        ],
-        likes: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true }
-            }
-        ],
-        shares: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true }
-            }
-        ],
-        views: [
-            {
-                date: { type: Date, required: true },
-                userId: { type: String, required: true }
-            }
-        ]
-    }
+    interactions: interactionsSchema
 }).pre('validate', async function (this: any, next) {
     if (this.isNew) {
         // Generate content id
@@ -98,7 +83,6 @@ const schema = new Schema({
         artes: 'Artes',
         ingles: 'Inglês',
         espanhol: 'Espanhol',
-        frances: 'Francês',
         literatura: 'Literatura',
         matematica: 'Matemática',
         fisica: 'Física',

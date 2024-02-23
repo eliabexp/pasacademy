@@ -20,7 +20,7 @@ export default function Logo({ color, className }: LogoProps) {
     return (
         <Link className={link({ color, className })} href="/">
             <LibraryBig size="32" />
-            <span className="text-nowrap text-xl font-bold">Pas Academy</span>
+            <span className="text-nowrap text-xl font-bold">PAS Academy</span>
         </Link>
     )
 }

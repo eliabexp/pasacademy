@@ -15,20 +15,19 @@ import { Mathematics } from '@tiptap-pro/extension-mathematics'
 import { Markdown } from 'tiptap-markdown'
 import { Body } from '@/components/ui/content'
 import {
+    BetweenHorizontalStart,
+    BetweenHorizontalEnd,
+    BetweenVerticalStart,
+    BetweenVerticalEnd,
     Bold,
     Flower2,
     Italic,
     Link as LinkIcon,
     MoreHorizontal,
     Paperclip,
-    Sigma
+    Sigma,
+    Table as TableIcon
 } from 'lucide-react'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import {
     Dialog,
     DialogContent,
@@ -38,11 +37,20 @@ import {
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import 'katex/dist/katex.min.css'
+import { tv } from 'tailwind-variants'
+import useKeyboardFocus from '@/hooks/useKeyboardFocus'
 
 interface EditorProps {
     className?: string
@@ -54,7 +62,10 @@ interface EditorProps {
 
 function EditorBubbleMenu({ editor }: { editor: EditorType }) {
     return (
-        <BubbleMenu className="flex items-center gap-1 rounded-lg border p-1" editor={editor}>
+        <BubbleMenu
+            className="flex items-center gap-1 rounded-lg border bg-background p-1"
+            editor={editor}
+        >
             <ToggleGroup type="multiple">
                 <ToggleGroupItem
                     data-state={editor.isActive('bold') ? 'on' : 'off'}
@@ -70,29 +81,51 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                 >
                     <Italic size="20" />
                 </ToggleGroupItem>
-                <ToggleGroupItem
-                    data-state={editor.isActive('heading', { level: 2 }) ? 'on' : 'off'}
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    value="title"
-                >
-                    Título
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                    data-state={editor.isActive('heading', { level: 3 }) ? 'on' : 'off'}
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    value="subtitle"
-                >
-                    Subtítulo
-                </ToggleGroupItem>
+                {editor.isActive('table') ? (
+                    <></>
+                ) : (
+                    <>
+                        <ToggleGroupItem
+                            data-state={editor.isActive('heading', { level: 2 }) ? 'on' : 'off'}
+                            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                            value="title"
+                        >
+                            Título
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                            data-state={editor.isActive('heading', { level: 3 }) ? 'on' : 'off'}
+                            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                            value="subtitle"
+                        >
+                            Subtítulo
+                        </ToggleGroupItem>
+                    </>
+                )}
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="px-3">
+                        <LinkIcon size="20" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="min-w-0">
+                        <Input placeholder="Pesquisar conteúdos..." />
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </ToggleGroup>
         </BubbleMenu>
     )
 }
 
+const editorCommandBarClass = tv({
+    base: 'sticky bottom-4 mx-auto w-max rounded-lg border bg-background transition-transform',
+    variants: {
+        focused: {
+            true: '-translate-y-48 md:translate-y-0'
+        }
+    }
+})
 function EditorCommandBar({ editor }: { editor: EditorType }) {
     return (
         <ToggleGroup
-            className="sticky bottom-4 mx-auto w-max rounded-lg border bg-background"
+            className={editorCommandBarClass({ focused: useKeyboardFocus() })}
             type="multiple"
         >
             <ToggleGroupItem
@@ -100,36 +133,126 @@ function EditorCommandBar({ editor }: { editor: EditorType }) {
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 value="bold"
             >
-                <Bold size="20" />
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Bold size="20" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <span>Negrito</span>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </ToggleGroupItem>
             <ToggleGroupItem
                 data-state={editor.isActive('italic') ? 'on' : 'off'}
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 value="italic"
             >
-                <Italic size="20" />
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Italic size="20" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <span>Itálico</span>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </ToggleGroupItem>
-            <ToggleGroupItem
-                data-state={editor.isActive('heading', { level: 2 }) ? 'on' : 'off'}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                value="title"
-            >
-                Título
-            </ToggleGroupItem>
-            <ToggleGroupItem
-                data-state={editor.isActive('heading', { level: 3 }) ? 'on' : 'off'}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                value="subtitle"
-            >
-                Subtítulo
-            </ToggleGroupItem>
-            <ToggleGroupItem
-                data-state="off"
-                onClick={() => editor.chain().focus().run()}
-                value="upload"
-            >
-                <Paperclip size="20" />
-            </ToggleGroupItem>
+            {editor.isActive('table') ? (
+                <>
+                    <ToggleGroupItem
+                        data-state="off"
+                        onClick={() => editor.chain().focus().addRowAfter().run()}
+                        value="new-row"
+                    >
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <BetweenHorizontalStart size="20" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <span>Adicionar linha</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        data-state="off"
+                        disabled={editor.isActive('tableHeader') ? true : false}
+                        onClick={() => editor.chain().focus().deleteRow().run()}
+                        value="delete-row"
+                    >
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <BetweenHorizontalEnd size="20" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <span>Excluir linha</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        data-state="off"
+                        onClick={() => editor.chain().focus().addColumnAfter().run()}
+                        value="new-column"
+                    >
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <BetweenVerticalStart size="20" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <span>Adicionar coluna</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        data-state="off"
+                        onClick={() => editor.chain().focus().deleteColumn().run()}
+                        value="delete-column"
+                    >
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <BetweenVerticalEnd size="20" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <span>Excluir coluna</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </ToggleGroupItem>
+                </>
+            ) : (
+                <>
+                    <ToggleGroupItem
+                        data-state={editor.isActive('heading', { level: 2 }) ? 'on' : 'off'}
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                        value="title"
+                    >
+                        Título
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        data-state={editor.isActive('heading', { level: 3 }) ? 'on' : 'off'}
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                        value="subtitle"
+                    >
+                        Subtítulo
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        data-state="off"
+                        onClick={() => editor.chain().focus().run()}
+                        value="upload"
+                    >
+                        <Paperclip size="20" />
+                    </ToggleGroupItem>
+                </>
+            )}
             <DropdownMenu>
                 <DropdownMenuTrigger className="px-3">
                     <MoreHorizontal />
@@ -142,6 +265,7 @@ function EditorCommandBar({ editor }: { editor: EditorType }) {
                         onClick={() =>
                             editor.chain().focus().toggleCodeBlock({ language: 'formula' }).run()
                         }
+                        disabled={editor.isActive('table')}
                         className="flex w-full flex-1 justify-normal gap-2"
                         size="sm"
                         value="formula"
@@ -155,16 +279,88 @@ function EditorCommandBar({ editor }: { editor: EditorType }) {
                         onClick={() =>
                             editor.chain().focus().toggleCodeBlock({ language: 'poem' }).run()
                         }
+                        disabled={editor.isActive('table')}
                         className="flex w-full flex-1 justify-normal gap-2"
                         size="sm"
                         value="poem"
                     >
                         <Flower2 /> Poema
                     </ToggleGroupItem>
+                    {editor.isActive('table') ? (
+                        <ToggleGroupItem
+                            data-state="off"
+                            onClick={() => editor.chain().focus().deleteTable().run()}
+                            className="flex w-full flex-1 justify-normal gap-2"
+                            size="sm"
+                            value="table"
+                        >
+                            <TableIcon /> Excluir tabela
+                        </ToggleGroupItem>
+                    ) : (
+                        <ToggleGroupItem
+                            data-state="off"
+                            disabled={editor.isActive('table') ? true : false}
+                            onClick={() => editor.chain().focus().insertTable().run()}
+                            className="flex w-full flex-1 justify-normal gap-2"
+                            size="sm"
+                            value="table"
+                        >
+                            <TableIcon /> Nova tabela
+                        </ToggleGroupItem>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
         </ToggleGroup>
     )
+}
+
+async function uploadFile(file: File, currentEditor: EditorType) {
+    const alt = prompt('Digite uma legenda que descreva a imagem')
+    if (!alt) return
+
+    if (file.size > 1024 * 1024 * 5)
+        return toast.error('Este arquivo é muito grande', {
+            description: 'O arquivo deve ter no máximo 5MB'
+        })
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const { signedUrl, filePath } = await fetch('/api/attachments', {
+        method: 'POST',
+        body: formData
+    })
+        .then((res) => {
+            if (!res.ok) {
+                toast.error('Falha ao enviar', {
+                    description: 'Desculpe, não foi possível enviar seu arquivo no momento'
+                })
+            }
+
+            return res.json()
+        })
+        .then((data) => {
+            return data
+        })
+    if (!signedUrl) return
+
+    fetch(signedUrl, {
+        method: 'PUT',
+        body: file
+    })
+        .then((res) => {
+            if (res.ok) return res
+
+            throw new Error('Failed to upload file')
+        })
+        .then((data) => {
+            currentEditor.chain().focus().setImage({ src: filePath, alt }).run()
+        })
+        .catch((err) => {
+            toast.error('Falha ao enviar arquivo', {
+                description: 'Tente novamente mais tarde'
+            })
+        })
 }
 
 export function Editor({
@@ -177,59 +373,11 @@ export function Editor({
     const [dialogOpen, setDialogOpen] = useState(false)
     const [altText, setAltText] = useState('')
 
-    const uploadFile = async (file: File, currentEditor: EditorType) => {
-        const alt = prompt('Digite uma legenda que descreva a imagem')
-        if (!alt) return
-
-        if (file.size > 1024 * 1024 * 5)
-            return toast.error('Este arquivo é muito grande', {
-                description: 'O arquivo deve ter no máximo 5MB'
-            })
-
-        const formData = new FormData()
-        formData.append('file', file)
-
-        const { signedUrl, filePath } = await fetch('/api/attachments', {
-            method: 'POST',
-            body: formData
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    toast.error('Falha ao enviar', {
-                        description: 'Desculpe, não foi possível enviar seu arquivo no momento'
-                    })
-                }
-
-                return res.json()
-            })
-            .then((data) => {
-                return data
-            })
-        if (!signedUrl) return
-
-        fetch(signedUrl, {
-            method: 'PUT',
-            body: file
-        })
-            .then((res) => {
-                if (res.ok) return res
-
-                throw new Error('Failed to upload file')
-            })
-            .then((data) => {
-                currentEditor.chain().focus().setImage({ src: filePath, alt }).run()
-            })
-            .catch((err) => {
-                toast.error('Falha ao enviar arquivo', {
-                    description: 'Tente novamente mais tarde'
-                })
-            })
-    }
-
+    // Editor instance
     const editor = useEditor({
         editorProps: {
             attributes: {
-                class: 'min-h-[60svh] outline-none px-1 pb-5'
+                class: 'min-h-[60svh] px-1 pb-5 outline-none [&_.ProseMirror-gapcursor]:after:border-foreground [&_table]:table-fixed'
             }
         },
         extensions: [
@@ -251,7 +399,6 @@ export function Editor({
                 },
                 onPaste: (currentEditor, files, htmlContent) => {
                     files.forEach((file) => {
-                        console.log(htmlContent, file)
                         if (htmlContent) return
 
                         uploadFile(file, currentEditor as EditorType)
@@ -259,11 +406,15 @@ export function Editor({
                 }
             }),
             Image,
-            Link,
+            Link.configure({
+                protocols: ['https']
+            }),
             Markdown.configure({
                 transformPastedText: true
             }),
-            Mathematics,
+            Mathematics.configure({
+                regex: /\$([^\$\s]*)\$/gi
+            }),
             Placeholder.configure({
                 emptyEditorClass:
                     'before:content-[attr(data-placeholder)] before:text-[#808080] before:float-left before:pointer-events-none before:h-0',
@@ -284,9 +435,16 @@ export function Editor({
                     }
                 }
             }),
-            Table,
-            TableCell,
-            TableHeader,
+            Table.configure({
+                lastColumnResizable: false,
+                resizable: true
+            }),
+            TableCell.extend({
+                content: 'paragraph'
+            }),
+            TableHeader.extend({
+                content: 'paragraph'
+            }),
             TableRow
         ],
         content: content || window.sessionStorage.getItem('editorContent'),
