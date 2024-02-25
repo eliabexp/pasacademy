@@ -1,4 +1,4 @@
-import { Body, Title } from '@/components/ui/content'
+import { Body, Title } from '@/layouts/Content'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

@@ -21,7 +21,7 @@ type Options = {
 
 export default function Criar() {
     const user = useSession()
-    if (!user) redirect('/login')
+    // if (!user) redirect('/login')
 
     const [options, setOptions] = useState<Options>({})
 

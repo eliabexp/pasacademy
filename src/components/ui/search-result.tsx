@@ -1,14 +1,14 @@
 import { Atom, BookOpenText, Brain, Brush, CaseSensitive, Fish, FlaskConical, LibraryBig, Map, ScrollText, Sigma, Speech } from 'lucide-react'
 import Link from 'next/link'
 
-interface SearchOptionProps {
+interface SearchResultProps {
     title: string
     subjectTitle: string
     subject: string
     name: string
 }
 
-const SearchOption = ({ title, subjectTitle, subject, name }: SearchOptionProps) => {
+const SearchResult = ({ title, subjectTitle, subject, name }: SearchResultProps) => {
     let Icon
     switch (subject) {
         case 'portugues':
@@ -70,4 +70,4 @@ const SearchOption = ({ title, subjectTitle, subject, name }: SearchOptionProps)
     )
 }
 
-export { SearchOption }
+export { SearchResult }

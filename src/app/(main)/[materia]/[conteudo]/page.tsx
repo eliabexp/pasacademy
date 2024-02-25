@@ -1,4 +1,4 @@
-import { Body, Title } from '@/components/ui/content'
+import { Body, Interactions, Title } from '@/layouts/Content'
 import { marked, parseInline, use } from 'marked'
 import { headers } from 'next/headers'
 import katex from 'marked-katex-extension'
@@ -95,6 +95,9 @@ export default async function Conteudo({ params: { materia, conteudo } }: Conten
                 subtitle={`${content.subjectTitle} - ${content.level}º ano`}
             />
             <Body dangerouslySetInnerHTML={{ __html }} />
+            {/* {content.status === 'public' && (
+                <Interactions id={content.id} title={content.title} />
+            )} */}
         </main>
     )
 }

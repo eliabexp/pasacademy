@@ -3,6 +3,7 @@ const nextConfig = {
         const CSP = [
             "default-src 'self'",
             "connect-src 'self' storage.googleapis.com",
+            "frame-src youtube.com",
             "font-src 'self'",
             'img-src * pasacademy.storage.googleapis.com blob: data:',
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
