@@ -3,6 +3,7 @@
 import { createContext, useState } from 'react'
 import Header from '@/layouts/Header'
 import Nav from '@/layouts/Nav'
+import { LoadingTopBar } from '@/components/ui/loading-top-bar'
 
 export const LayoutContext = createContext<{
     layout: { createHeader?: { title: string; level: string } }
@@ -20,6 +21,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <Nav page={page} setPage={setPage} />
                 {children}
             </div>
+            <LoadingTopBar />
         </LayoutContext.Provider>
     )
 }

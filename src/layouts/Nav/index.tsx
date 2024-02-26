@@ -62,7 +62,7 @@ export default function Nav({ page, setPage }: NavProps) {
     const pathName = usePathname().split('/')[1]
     useEffect(() => {
         if (links.some((l) => l.url === pathName)) setPage(pathName)
-        else if (!page) setPage('inicio')
+        else setPage('inicio')
     }, [pathName])
 
     return (
