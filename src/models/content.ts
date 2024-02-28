@@ -50,7 +50,7 @@ const schema = new Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, lowercase: true, required: true, index: true },
     subject: { type: String, enum: Object.keys(subjectsId), required: true },
-    subjectTitle: { type: String, required: true },
+    subjectName: { type: String, required: true },
     level: { type: Number, min: 1, max: 3, required: true },
     createdAt: { type: Date, default: Date.now() },
     authorId: { type: String, required: true },
@@ -74,7 +74,7 @@ const schema = new Schema({
     }
 
     // Generate subject name
-    const subjectTitles: { [key: string]: string } = {
+    const subjectNames: { [key: string]: string } = {
         portugues: 'Português',
         geografia: 'Geografia',
         historia: 'História',
@@ -90,7 +90,7 @@ const schema = new Schema({
         biologia: 'Biologia',
         obras: 'Obra do PAS'
     }
-    this.subjectTitle = subjectTitles[this.subject]
+    this.subjectName = subjectNames[this.subject]
 
     next()
 })

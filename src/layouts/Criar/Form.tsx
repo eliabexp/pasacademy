@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { tv } from 'tailwind-variants'
 
-const form = tv({
+const formVariants = tv({
     base: 'mx-auto w-4/5 transition-transform duration-500 ease-in-out md:w-96',
     variants: {
         hide: {
@@ -167,7 +167,7 @@ export default function CreateForm({ options, setOptions }: FormProps) {
 
     return (
         <form
-            className={form({ hide: !!options.type })}
+            className={formVariants({ hide: !!options.type })}
             onSubmit={(e) => {
                 e.preventDefault()
                 const formData = new FormData(e.target as HTMLFormElement)

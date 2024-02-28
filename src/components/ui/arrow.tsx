@@ -8,7 +8,7 @@ interface ArrowProps extends React.HTMLAttributes<HTMLButtonElement> {
     action: 'back' | 'forward'
 }
 
-const button = tv({
+const buttonVariants = tv({
     base: '',
     variants: {
         direction: {
@@ -32,7 +32,7 @@ export default function BackArrow({ action, direction, className }: ArrowProps) 
     }
 
     return (
-        <button className={button({ direction, className })} onClick={onClick}>
+        <button className={buttonVariants({ direction, className })} onClick={onClick}>
             <ChevronRight />
         </button>
     )

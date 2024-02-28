@@ -16,19 +16,10 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
-type Options = {
-    type?: string
-} | {
-    type: 'content'
-    title: string
-    subject: string
-    level: number
-} | {
-    type: 'question' | 'roadmap'
-    title: string
-    subjects: string[]
-    level: number
-}
+type Options =
+    | { type?: string }
+    | { type: 'content'; title: string; subject: string; level: number }
+    | { type: 'question' | 'roadmap'; title: string; subjects: string[]; level: number }
 
 interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
     options: Options
@@ -36,17 +27,13 @@ interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function publishContent(options: Options, output: string) {
-    // Collect data urls and replace it with "file" placeholders
+    // Collect image files /!\[(.*)\]\((.*?)\)/g
     const files: string[] = []
-    let content = output.replace(/!\[(.*)\]\((.*?)\)/g, (match, alt, src) => {
-        files.push(src)
-        return `![${alt}](file${files.length - 1})`
-    })
 
     return fetch('/api/contents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...options, content, files })
+        body: JSON.stringify({ ...options, output, files })
     }).then((res) => {
         if (!res.ok) {
             if (res.status === 409)
@@ -78,9 +65,9 @@ export default function CreateContent({ className, options, setOptions }: Conten
     const router = useRouter()
 
     return (
-        <div className={className}>
+        <div className="mx-auto max-w-full grow flex-col md:max-w-2xl">
             <Editor className="mx-auto mb-8" editable setOutput={setOutput} />
-            <div className="mx-auto flex max-w-2xl justify-end gap-4">
+            <div className="mx-auto flex w-full justify-end gap-4">
                 <Button onClick={() => setOptions({})} variant="ghost">
                     Voltar
                 </Button>

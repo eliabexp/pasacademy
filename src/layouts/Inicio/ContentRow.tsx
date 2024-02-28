@@ -9,6 +9,7 @@ interface Content {
     thumb: string
     name: string
     subject: string
+    subjectName: string
 }
 interface ContentRowProps {
     row: {
@@ -52,6 +53,7 @@ export default function ContentRow({ row }: ContentRowProps) {
                             thumb={content.thumb}
                             name={content.name}
                             subject={content.subject}
+                            subjectName={content.subjectName}
                         />
                     </li>
                 ))}

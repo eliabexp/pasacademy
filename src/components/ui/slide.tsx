@@ -18,8 +18,8 @@ const Slide = ({ name, description, url, image }: SlideProps) => {
                 className="block w-full transition-transform duration-500 ease-in-out hover:scale-105 md:h-full"
                 src={image}
                 alt={name}
-                width="1280"
-                height="720"
+                width="768"
+                height="432"
                 draggable="false"
             />
             <div className="absolute bottom-6 left-3 text-white drop-shadow-[0px_6px_12px_black]">

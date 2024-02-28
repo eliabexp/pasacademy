@@ -2,11 +2,9 @@ import Link from 'next/link'
 import { LibraryBig } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 
-interface LogoProps extends React.HTMLAttributes<HTMLAnchorElement> {
-    color?: 'white' | 'black'
-}
+interface LogoProps extends React.HTMLAttributes<HTMLAnchorElement> {}
 
-const link = tv({
+const linkVariants = tv({
     base: 'flex items-center gap-2',
     variants: {
         color: {
@@ -16,9 +14,9 @@ const link = tv({
     }
 })
 
-export default function Logo({ color, className }: LogoProps) {
+export default function Logo({ className }: LogoProps) {
     return (
-        <Link className={link({ color, className })} href="/">
+        <Link className={linkVariants({ className })} href="/">
             <LibraryBig size="32" />
             <span className="text-nowrap text-xl font-bold">PAS Academy</span>
         </Link>

@@ -5,10 +5,11 @@ interface ContentCardProps {
     title: string
     thumb: string
     subject: string
+    subjectName: string
     name: string
 }
 
-const ContentCard = ({ title, thumb, subject, name }: ContentCardProps) => {
+const ContentCard = ({ title, thumb, subject, subjectName, name }: ContentCardProps) => {
     return (
         <Link
             className="block h-40 w-60 p-1 text-center transition-transform duration-300 ease-in-out hover:scale-[1.02]"
@@ -17,7 +18,7 @@ const ContentCard = ({ title, thumb, subject, name }: ContentCardProps) => {
             <Image
                 className="mb-1 block h-32 rounded-2xl"
                 src={thumb}
-                alt={title}
+                alt={`${subjectName} - ${title}`}
                 width={240}
                 height={135}
                 draggable="false"

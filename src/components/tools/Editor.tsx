@@ -26,7 +26,8 @@ import {
     Link as LinkIcon,
     MoreHorizontal,
     Sigma,
-    Table as TableIcon
+    Table as TableIcon,
+    SearchIcon
 } from 'lucide-react'
 import {
     Dialog,
@@ -64,7 +65,7 @@ interface EditorProps {
 interface SearchResult {
     id: string
     subject: string
-    subjectTitle: string
+    subjectName: string
     name: string
     title: string
 }
@@ -153,40 +154,46 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                             <LinkIcon size="20" />
                         </PopoverTrigger>
                         <PopoverContent className="min-w-0">
-                            <Label>Vincular conteúdo</Label>
+                            <Label htmlFor="searchContent">Criar link</Label>
                             <p className="my-2 block text-sm">
-                                Digite um conteúdo ou termo para pesquisar
+                                Digite um conteúdo ou termo para vincular
                             </p>
-                            <Input
-                                minLength={2}
-                                maxLength={48}
-                                placeholder="Pesquisar conteúdos..."
-                                defaultValue={window.getSelection()?.toString().slice(0, 32)}
-                                onChange={(e) => setQuery(e.target.value)}
-                            />
+                            <div className="relative size-full">
+                                <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2" size="16" />
+                                <Input
+                                    className="mb-3 pl-8"
+                                    id="searchContent"
+                                    minLength={2}
+                                    maxLength={48}
+                                    placeholder="Pesquisar conteúdos..."
+                                    defaultValue={window.getSelection()?.toString().slice(0, 32)}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                />
+                            </div>
                             {results.length > 0 && (
                                 <ul>
                                     {results.map(
                                         ({
                                             id,
                                             subject,
-                                            subjectTitle,
+                                            subjectName,
                                             name,
                                             title
                                         }: SearchResult) => {
                                             return (
-                                                <li
-                                                    key={id}
-                                                    onClick={() => {
-                                                        editor
-                                                            .chain()
-                                                            .focus()
-                                                            .setLink({
-                                                                href: `/${subject}/${name}`
-                                                            })
-                                                            .run()
-                                                    }}
-                                                >{`${title} - ${subjectTitle}`}</li>
+                                                <li className="text-sm" key={id}>
+                                                    <button
+                                                        onClick={() => {
+                                                            editor
+                                                                .chain()
+                                                                .focus()
+                                                                .setLink({
+                                                                    href: `/${subject}/${name}`
+                                                                })
+                                                                .run()
+                                                        }}
+                                                    >{`${title} - ${subjectName}`}</button>
+                                                </li>
                                             )
                                         }
                                     )}

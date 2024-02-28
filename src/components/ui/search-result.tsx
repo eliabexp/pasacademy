@@ -3,12 +3,12 @@ import Link from 'next/link'
 
 interface SearchResultProps {
     title: string
-    subjectTitle: string
+    subjectName: string
     subject: string
     name: string
 }
 
-const SearchResult = ({ title, subjectTitle, subject, name }: SearchResultProps) => {
+const SearchResult = ({ title, subjectName, subject, name }: SearchResultProps) => {
     let Icon
     switch (subject) {
         case 'portugues':
@@ -62,9 +62,9 @@ const SearchResult = ({ title, subjectTitle, subject, name }: SearchResultProps)
     return (
         <Link className="block px-10 py-2" href={`/${subject}/${name}`}>
             <Icon className="absolute left-2 top-1/2 -translate-y-1/2" />
-            <div>
-                <h3 className="text-lg font-bold">{title}</h3>
-                <span>{subjectTitle}</span>
+            <div className="flex flex-col">
+                <h3 className="font-bold">{title}</h3>
+                <span className="text-sm">{subjectName}</span>
             </div>
         </Link>
     )

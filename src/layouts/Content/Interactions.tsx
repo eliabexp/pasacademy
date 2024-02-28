@@ -4,14 +4,20 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Bookmark, Heart, Share2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-export default function Interactions({ id, title }: { id: string; title: string }) {
+interface InteractionsProps {
+    id: string
+    title: string
+    liked: boolean
+}
+
+export default function Interactions({ id, title, liked }: InteractionsProps) {
     const likeContent = () => {
         fetch(`/api/contents/${id}/interactions`, {
             method: 'POST',
             body: JSON.stringify({ type: 'like' })
         })
     }
-    
+
     const shareContent = () => {
         if (navigator.share) {
             navigator.share({

@@ -29,10 +29,10 @@ use({
                 .normalize('NFD')
                 .replace(/[^a-z0-9]/g, '')}">${text}</h${level}>`
         },
-        image(href, title, text) {
+        image(src, title, text) {
             return `
                 <figure>
-                    <img src="${href}" alt="${text}">
+                    <img src="${src}" alt="${text}">
                     ${text ? `<figcaption>${text}</figcaption>` : ''}
                 </figure>
             `
@@ -92,12 +92,12 @@ export default async function Conteudo({ params: { materia, conteudo } }: Conten
         <main className="mx-auto p-4">
             <Title
                 title={content.title}
-                subtitle={`${content.subjectTitle} - ${content.level}º ano`}
+                subtitle={`${content.subjectName} - ${content.level}º ano`}
             />
             <Body dangerouslySetInnerHTML={{ __html }} />
-            {/* {content.status === 'public' && (
-                <Interactions id={content.id} title={content.title} />
-            )} */}
+            {content.status === 'public' && (
+                <Interactions id={content.id} title={content.title} liked />
+            )}
         </main>
     )
 }

@@ -14,12 +14,12 @@ interface SearchProps {
 interface SearchResult {
     id: string
     subject: string
-    subjectTitle: string
+    subjectName: string
     name: string
     title: string
 }
 
-const ul = tv({
+const ulVariants = tv({
     base: 'absolute top-full mt-2 w-full overflow-hidden rounded-lg border bg-background',
     variants: {
         isResultsOpen: {
@@ -67,18 +67,18 @@ export default function Search({ subject, placeholder }: SearchProps) {
                     autoComplete="off"
                     onChange={(e) => setQuery(e.target.value.trimStart())}
                     onFocus={() => setIsResultsOpen(true)}
-                    onBlur={() => setTimeout(() => setIsResultsOpen(false), 80)}
+                    onBlur={() => setTimeout(() => setIsResultsOpen(false), 150)}
                 />
                 <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2" size="20" />
             </div>
             {results.length > 0 && (
-                <ul className={ul({ isResultsOpen })}>
-                    {results.map(({ id, subject, subjectTitle, name, title }: SearchResult) => {
+                <ul className={ulVariants({ isResultsOpen })}>
+                    {results.map(({ id, subject, subjectName, name, title }: SearchResult) => {
                         return (
                             <li key={id}>
                                 <SearchResult
                                     title={title}
-                                    subjectTitle={subjectTitle}
+                                    subjectName={subjectName}
                                     subject={subject}
                                     name={name}
                                 />

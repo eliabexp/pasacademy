@@ -24,13 +24,17 @@ export default function Menu({ links, page }: MenuProps) {
 
                 if (link.hide) return null
                 return (
-                    <NavButton
-                        url={'/' + url}
-                        icon={isActive ? iconActive : icon}
-                        name={name}
-                        active={isActive}
+                    <li
+                        className="w-full [&:nth-child(n+6)]:hidden md:[&:nth-child(n+6)]:flex"
                         key={name}
-                    />
+                    >
+                        <NavButton
+                            url={'/' + url}
+                            icon={isActive ? iconActive : icon}
+                            name={name}
+                            active={isActive}
+                        />
+                    </li>
                 )
             })}
         </ul>
