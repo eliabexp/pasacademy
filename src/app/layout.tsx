@@ -1,7 +1,8 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import AuthProvider from '@/components/providers/AuthProvider'
 import ThemeProvider from '@/components/providers/ThemeProvider'
 import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
 import { inter } from './fonts'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
@@ -14,8 +15,17 @@ export const metadata: Metadata = {
     description: 'Uma plataforma completa sobre o PAS UnB.'
 }
 
-export const viewport: Viewport = {
-    maximumScale: 1
+export function generateViewport() {
+    const userAgent = headers().get('User-Agent')
+
+    // prevent input zoom on focus on iOS devices
+    if (userAgent && /iPad|iPhone|iPod/.test(userAgent)) {
+        return {
+            maximumScale: 1
+        }
+    }
+
+    return {}
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -53,6 +53,7 @@ export default async function Home() {
                                 alt="Imagem da tela do site"
                                 className="block size-full md:h-auto"
                                 src="/assets/images/inicio.png"
+                                priority
                             />
                         </picture>
                     </div>
@@ -62,15 +63,15 @@ export default async function Home() {
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
                         alt="Captura da tela de questões"
-                        width="1280"
-                        height="720"
+                        width="720"
+                        height="405"
                         draggable="false"
                     />
                     <div>
                         <h2 className="my-4 text-2xl font-bold">
                             Seu caminho para a aprovação começa aqui
                         </h2>
-                        <p className="leading-6">
+                        <p>
                             Prepare-se ao máximo para o dia da prova com mais de 1000 questões de
                             provas anteriores e exercícios personalizados.
                         </p>
@@ -81,13 +82,13 @@ export default async function Home() {
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
                         alt="Captura da tela de conteúdos"
-                        width="1280"
-                        height="720"
+                        width="720"
+                        height="405"
                         draggable="false"
                     />
                     <div className="md:text-right">
                         <h2 className="my-4 text-2xl font-bold">
-                            Não perca mais tempo procurando o que estudar
+                            Sem mais horas perdidas procurando o que estudar
                         </h2>
                         <p>
                             Reunimos todos os conteúdos e obras de cada ano com explicações,
@@ -100,8 +101,8 @@ export default async function Home() {
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
                         alt="Captura da tela de trilhas"
-                        width="1280"
-                        height="720"
+                        width="720"
+                        height="405"
                         draggable="false"
                     />
                     <div>
@@ -109,8 +110,31 @@ export default async function Home() {
                             Conheça a sua melhor versão de estudante
                         </h2>
                         <p>
-                            Ao <a href="/login">criar uma conta</a>, você recebe uma trilha de
-                            estudos personalizada e exclusiva, feita especialmente para você!
+                            Ao{' '}
+                            <a className="underline underline-offset-2" href="/login">
+                                criar sua conta
+                            </a>
+                            , você recebe uma trilha de estudos personalizada e exclusiva, feita
+                            especialmente para você!
+                        </p>
+                    </div>
+                </section>
+                <section className="px-6 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
+                    <Image
+                        className="rounded-lg md:w-[50%]"
+                        src="/assets/images/content.png"
+                        alt="Captura da tela de conteúdos"
+                        width="720"
+                        height="405"
+                        draggable="false"
+                    />
+                    <div className="md:text-right">
+                        <h2 className="my-4 text-2xl font-bold">
+                            Cada conteúdo com a profundidade que você precisa
+                        </h2>
+                        <p>
+                            Aqui você tem cada conteúdo por completo, para percorrer a fundo ou
+                            apenas fazer uma revisão.
                         </p>
                     </div>
                 </section>

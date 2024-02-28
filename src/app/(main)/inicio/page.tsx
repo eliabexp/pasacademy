@@ -7,7 +7,7 @@ export default async function Inicio() {
     )
 
     return (
-        <main className="min-w-0 pt-3">
+        <main className="w-full min-w-0 pt-3">
             <Slider slider={topics.slider} />
             {topics.rows.map((row: Topic) => {
                 switch (row.type) {
