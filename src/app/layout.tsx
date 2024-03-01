@@ -4,6 +4,7 @@ import ThemeProvider from '@/components/providers/ThemeProvider'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { inter } from './fonts'
+import { redirect } from 'next/navigation'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 

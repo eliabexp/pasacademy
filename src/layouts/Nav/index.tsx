@@ -26,28 +26,22 @@ export default function Nav({ page, setPage }: NavProps) {
             iconActive: <LibraryBig fill="currentColor" />
         },
         {
+            name: 'Comunidade',
+            url: 'comunidade',
+            icon: <Users />,
+            iconActive: <Users fill="currentColor" />
+        },
+        {
             name: 'Questões',
             url: 'questoes',
             icon: <ListTodo />,
             iconActive: <ListTodo fill="currentColor" />
         },
         {
-            name: 'Trilhas',
-            url: 'trilhas',
-            icon: <Route />,
-            iconActive: <Route fill="currentColor" />
-        },
-        {
             name: user ? 'Perfil' : 'Entrar',
             url: 'perfil',
             icon: <User />,
             iconActive: <User fill="currentColor" />
-        },
-        {
-            name: 'Comunidade',
-            url: 'comunidade',
-            icon: <Users />,
-            iconActive: <Users fill="currentColor" />
         },
         {
             name: 'Criar',

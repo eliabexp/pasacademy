@@ -20,8 +20,8 @@ export default function Header({ page }: { page: string }) {
     }
 
     return (
-        <header className="sticky top-0 z-20 mx-auto flex h-16 max-w-screen-2xl items-center justify-between bg-background px-0 print:hidden">
-            <Logo className="hidden justify-center md:flex md:shrink-0 md:basis-60" />
+        <header className="sticky top-0 z-20 mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-3 bg-background px-4 print:hidden">
+            <Logo className="hidden pl-4 md:flex md:shrink-0 md:basis-56" />
             {header[page]}
         </header>
     )
