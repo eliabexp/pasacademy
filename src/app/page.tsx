@@ -18,7 +18,7 @@ export default async function Home() {
                 </Link>
             </header>
             <main className="mx-auto max-w-screen-2xl px-6">
-                <section className="flex flex-col gap-20 py-20 md:flex-row">
+                <section className="flex flex-col gap-20 py-24 md:flex-row md:py-28">
                     <div className="max-w-xl">
                         <h1 className="mb-4 text-4xl font-bold">
                             Uma plataforma completa sobre o PAS UnB.
@@ -58,7 +58,7 @@ export default async function Home() {
                         </picture>
                     </div>
                 </section>
-                <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
+                <section className="px-8 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
@@ -77,7 +77,7 @@ export default async function Home() {
                         </p>
                     </div>
                 </section>
-                <section className="px-6 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
+                <section className="px-8 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
@@ -96,7 +96,7 @@ export default async function Home() {
                         </p>
                     </div>
                 </section>
-                <section className="px-6 py-16 md:flex md:justify-between md:gap-6">
+                <section className="px-8 py-16 md:flex md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"
@@ -119,7 +119,7 @@ export default async function Home() {
                         </p>
                     </div>
                 </section>
-                <section className="px-6 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
+                <section className="px-8 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
                         className="rounded-lg md:w-[50%]"
                         src="/assets/images/content.png"

@@ -6,7 +6,7 @@ import users from '@/models/user'
 import { z } from 'zod'
 
 export async function GET(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-    await startDB('platformDB')
+    await startDB()
 
     const session = await auth()
 
@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, { params: { id } }: { params: { id
     const session = await auth()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    await startDB('platformDB')
+    await startDB()
     const user = await users.findOne({ id })
     if (!user) notFound()
 
@@ -41,7 +41,7 @@ export async function DELETE(req: NextRequest, { params: { id } }: { params: { i
     const session = await auth()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    await startDB('platformDB')
+    await startDB()
     const user = await users.findOne({ id })
     if (!user) notFound()
 

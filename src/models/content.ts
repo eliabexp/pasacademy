@@ -59,7 +59,7 @@ const schema = new Schema({
     status: { type: String, enum: ['draft', 'public'], default: 'draft' },
     tags: [{ type: String }],
     content: { type: String, required: true },
-    interactions: interactionsSchema
+    interactions: { type: interactionsSchema, required: true }
 }).pre('validate', async function (this: any, next) {
     if (this.isNew) {
         // Generate content id

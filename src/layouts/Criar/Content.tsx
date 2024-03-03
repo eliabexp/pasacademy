@@ -33,7 +33,7 @@ function publishContent(options: Options, output: string) {
     return fetch('/api/contents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...options, output, files })
+        body: JSON.stringify({ ...options, content: output, files })
     }).then((res) => {
         if (!res.ok) {
             if (res.status === 409)

@@ -1,18 +1,17 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { auth } from '@/lib/auth'
+import { auth, getSessionToken } from '@/lib/auth'
 import startDB from '@/lib/mongoose'
+import tokens from '@/models/token'
 import users from '@/models/user'
 import sessions from '@/models/session'
 
 const isTeacher = (email: string) => {
-    const teacherEmails = [
-        '@edu.se.df.gov.br'
-    ]
+    const teacherEmails = ['@edu.se.df.gov.br']
 
-    return teacherEmails.some(teacherEmail => email.endsWith(teacherEmail))
+    return teacherEmails.some((teacherEmail) => email.endsWith(teacherEmail))
 }
 
 export async function GET(req: NextRequest) {
@@ -35,10 +34,11 @@ export async function GET(req: NextRequest) {
     if (!user) notFound()
 
     await startDB()
-    let userData = {
+    const userData = {
         id: user.id,
         username: user.username,
-        avatar: user.avatar
+        avatar: user.avatar,
+        role: user.profile.role
     }
 
     return NextResponse.json(userData, { status: 200 })
@@ -53,20 +53,19 @@ export async function POST(req: NextRequest) {
     })
 
     const session = await auth()
-    if (session !== false) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (session) redirect('/')
+
+    const token = getSessionToken()
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    await startDB('authDB')
+    const sessionData = await sessions.findOne({ token, expires: { $gt: new Date() } })
+    if (!sessionData) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     try {
         const user = schema.parse(body)
 
-        const token = cookies().get(
-            `${process.env.NODE_ENV === 'development' ? '' : '__Secure-'}token`
-        )
-        if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-        await startDB('authDB')
-        const sessionData = await sessions.findOne({ token: token.value })
-
-        await startDB('platformDB')
+        await startDB()
         const userEmail = sessionData.userId
         const newUser = await users.create({
             email: userEmail,
@@ -75,18 +74,29 @@ export async function POST(req: NextRequest) {
             },
             profile: {
                 name: user.name,
-                username: user.name.toLowerCase().normalize('NFD').replace(/[^a-z0-9_.]/g, '').slice(0, 22),
+                username: user.name
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[^a-z0-9_.]/g, '')
+                    .slice(0, 22),
                 gender: user.gender,
                 level: user.level,
                 role: isTeacher(userEmail) ? 'teacher' : 'student'
             }
         })
 
-        // Update temporary sessions
+        // Delete temporary sessions
         await startDB('authDB')
-        await sessions.updateMany({ userId: userEmail }, { userId: newUser.id })
+        await sessions.deleteMany({ userId: userEmail })
 
-        return NextResponse.json({ message: 'Success' }, { status: 200 })
+        const authorizationToken = await tokens.create({
+            token: crypto.randomUUID(),
+            type: 'redirect',
+            email: userEmail,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) // 30 days
+        })
+
+        redirect(`${process.env.API_URL}/auth/callback?token=${authorizationToken.token}`)
     } catch (err) {
         return NextResponse.json({ error: 'Bad request' }, { status: 400 })
     }

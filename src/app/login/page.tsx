@@ -1,6 +1,6 @@
 import { ConfirmEmail, Error, SignIn, SignUp } from '@/layouts/Login'
 import Logo from '@/components/ui/logo'
-import { auth } from '@/lib/auth'
+import { auth, getSessionToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 
@@ -16,7 +16,6 @@ export default async function LoginPage({
     const callbackUrl = `${process.env.API_URL}/auth`
     const facebookOAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.FACEBOOK_CLIENT_ID}&redirect_uri=${callbackUrl}&state=facebook&scope=email`
     const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=${callbackUrl}&client_id=${process.env.GOOGLE_CLIENT_ID}&state=google&scope=https%3A//www.googleapis.com/auth/userinfo.email+https%3A//www.googleapis.com/auth/userinfo.profile`
-
     async function sendEmail(formData: FormData) {
         'use server'
 
@@ -34,14 +33,14 @@ export default async function LoginPage({
         })
     }
 
-    // SignUp action
-    async function signUp(formData: FormData) {
+    // SignUp properties
+    async function signUpAction(formData: FormData) {
         'use server'
 
         const body = Object.fromEntries(formData.entries())
 
         const session = await auth()
-        if (session !== false) redirect('/login')
+        if (session) redirect('/login')
 
         const cookie = headers().get('cookie') || ''
 
@@ -57,7 +56,8 @@ export default async function LoginPage({
     }
 
     function Container() {
-        if (session === false) return <SignUp action={signUp} />
+        const sessionToken = getSessionToken()
+        if (sessionToken?.startsWith('t')) return <SignUp action={signUpAction} />
         if (searchParams.confirmarEmail === '') return <ConfirmEmail />
         return (
             <SignIn

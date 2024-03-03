@@ -1,5 +1,6 @@
 import { Body, Interactions, Title } from '@/layouts/Content'
 import { marked, parseInline, use } from 'marked'
+import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import katex from 'marked-katex-extension'
 import { notFound } from 'next/navigation'
@@ -61,10 +62,10 @@ export const generateMetadata = async ({ params: { materia, conteudo } }: Conten
     const content = await fetch(
         process.env.API_URL + `/contents?subject=${materia}&name=${conteudo}`,
         { headers: { cookie } }
-    ).then(async (res) => {
+    ).then((res) => {
         if (!res.ok) notFound()
 
-        return await res.json()
+        return res.json()
     })
 
     return {
@@ -75,29 +76,52 @@ export const generateMetadata = async ({ params: { materia, conteudo } }: Conten
 
 export default async function Conteudo({ params: { materia, conteudo } }: ContentProps) {
     const cookie = headers().get('cookie') || ''
+    const user = await auth()
 
     const content = await fetch(
         process.env.API_URL + `/contents?subject=${materia}&name=${conteudo}`,
         { headers: { cookie }, next: { revalidate: 0 } }
-    ).then(async (res) => {
+    ).then((res) => {
         if (!res.ok) notFound()
 
-        return await res.json()
+        return res.json()
     })
 
     const text = marked(content.content)
     const __html = text // Sanitize
 
+    const likeCount = content.interactions.likes.length
+    const liked =
+        user &&
+        content.interactions.likes.some(
+            (like: { userId: string; date: Date }) => like.userId === user.id
+        )
+
     return (
         <main className="mx-auto p-4">
-            <Title
-                title={content.title}
-                subtitle={`${content.subjectName} - ${content.level}º ano`}
-            />
-            <Body dangerouslySetInnerHTML={{ __html }} />
-            {content.status === 'public' && (
-                <Interactions id={content.id} title={content.title} liked />
-            )}
+            <article>
+                <Title
+                    title={content.title}
+                    subtitle={`${content.subjectName} - ${content.level}º ano`}
+                />
+                {content.status !== 'public' && (
+                    <div className="mb-4 rounded-md bg-yellow-200 p-4">
+                        <p className="text-sm text-yellow-900">
+                            Este conteúdo está em processo de revisão e ainda não foi publicado.
+                        </p>
+                    </div>
+                )}
+                <Body dangerouslySetInnerHTML={{ __html }} />
+                {content.status === 'public' && (
+                    <Interactions
+                        id={content.id}
+                        title={content.title}
+                        likeCount={likeCount}
+                        liked={liked}
+                        saved={false}
+                    />
+                )}
+            </article>
         </main>
     )
 }

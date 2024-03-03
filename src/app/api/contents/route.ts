@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { type PipelineStage } from 'mongoose'
 import contents, { type Content } from '@/models/content'
-import { auth } from '@/lib/auth'
+import { auth, type User } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 import startDB from '@/lib/mongoose'
 import { z } from 'zod'
@@ -10,13 +10,14 @@ interface Query {
     subject?: string
     name?: string
     level?: number
+    limit?: number
     q?: string
     sort?: 'new' | 'view'
     status?: 'public' | 'draft' | 'all'
 }
 
-async function getContents(query: Query, multiple: boolean) {
-    await startDB('platformDB')
+async function getContents(query: Query, multiple: boolean, user: User) {
+    await startDB()
 
     const pipeline: PipelineStage[] = []
 
@@ -50,10 +51,10 @@ async function getContents(query: Query, multiple: boolean) {
                 ...query.subject && { subject: query.subject },
                 ...query.name && { name: query.name },
                 ...query.level && { level: query.level },
-                ...query.status && { status: query.status }
+                ...query.status === 'public' && { $or: [{ status: 'public' }, { authorId: user?.id }] }
             }
         },
-        { $limit: 8 },
+        { $limit: query.limit || 10 },
         { $project: { _id: 0 } }
     )
 
@@ -68,7 +69,7 @@ async function getContents(query: Query, multiple: boolean) {
 }
 
 export async function GET(req: NextRequest) {
-    const session = await auth()
+    const user = await auth()
     const params = req.nextUrl.searchParams
     if (params.size === 0) notFound()
 
@@ -77,6 +78,7 @@ export async function GET(req: NextRequest) {
         subject: z.string().optional(),
         name: z.string().max(48).optional(),
         level: z.coerce.number().int().min(1).max(3).optional(),
+        limit: z.coerce.number().int().min(1).max(8).optional(),
         q: z.string().max(48).optional(),
         sort: z.enum(['new', 'view']).optional(),
         status: z.enum(['public', 'draft', 'all']).default('public')
@@ -89,12 +91,12 @@ export async function GET(req: NextRequest) {
 
     // Restrict access to unpublished content
     const allowedPermissions = ['contentModerator', 'admin']
-    if (session && session.permissions.some((permission) => allowedPermissions.includes(permission))) {
+    if (user && user.permissions.some((permission) => allowedPermissions.includes(permission))) {
         query.status = 'all'
     }
     else query.status = 'public'
 
-    const data = await getContents(query, multiple)
+    const data = await getContents(query, multiple, user)
     if (!data) notFound()
 
     return NextResponse.json(data, { status: 200 })

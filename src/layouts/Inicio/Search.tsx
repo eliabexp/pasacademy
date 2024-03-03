@@ -20,7 +20,7 @@ interface SearchResult {
 }
 
 const ulVariants = tv({
-    base: 'absolute top-full mt-2 w-full overflow-hidden rounded-lg border bg-background',
+    base: 'absolute top-full mt-2 w-full overflow-hidden rounded-md border bg-background',
     variants: {
         isResultsOpen: {
             true: 'block',

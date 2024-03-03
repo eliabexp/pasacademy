@@ -25,9 +25,10 @@ import {
     Italic,
     Link as LinkIcon,
     MoreHorizontal,
+    SearchIcon,
     Sigma,
     Table as TableIcon,
-    SearchIcon
+    Unlink
 } from 'lucide-react'
 import {
     Dialog,
@@ -80,7 +81,7 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
 
         // Delay the request to avoid too many requests
         const delay = setTimeout(() => {
-            fetch(`/api/contents?multiple&q=${query}`, {
+            fetch(`/api/contents?multiple&q=${query}&limit=5`, {
                 next: { revalidate: 600 }
             })
                 .then((res) => {
@@ -98,6 +99,7 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
         <BubbleMenu
             className="flex items-center gap-1 rounded-lg border bg-background p-1"
             editor={editor}
+            shouldShow={({ editor }) => !editor.isActive('image')}
         >
             <ToggleGroup type="multiple">
                 <ToggleGroupItem
@@ -141,7 +143,7 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                             editor.chain().focus().unsetLink().run()
                         }}
                     >
-                        <LinkIcon size="20" />
+                        <Unlink size="20" />
                     </button>
                 ) : (
                     <Popover>
@@ -159,7 +161,10 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                                 Digite um conteúdo ou termo para vincular
                             </p>
                             <div className="relative size-full">
-                                <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2" size="16" />
+                                <SearchIcon
+                                    className="absolute left-2 top-1/2 -translate-y-1/2"
+                                    size="16"
+                                />
                                 <Input
                                     className="mb-3 pl-8"
                                     id="searchContent"
@@ -181,8 +186,9 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                                             title
                                         }: SearchResult) => {
                                             return (
-                                                <li className="text-sm" key={id}>
+                                                <li className="my-2 w-full text-sm" key={id}>
                                                     <button
+                                                        className="block w-full rounded-md p-2 text-left hover:bg-hover"
                                                         onClick={() => {
                                                             editor
                                                                 .chain()
@@ -192,7 +198,9 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
                                                                 })
                                                                 .run()
                                                         }}
-                                                    >{`${title} - ${subjectName}`}</button>
+                                                    >
+                                                        {title}
+                                                    </button>
                                                 </li>
                                             )
                                         }

@@ -6,7 +6,7 @@ import startDB from '@/lib/mongoose'
 import { z } from 'zod'
 
 export async function GET(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-    await startDB('platformDB')
+    await startDB()
 
     const session = await auth()
 
@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest, { params: { id } }: { params: { id
     const session = await auth()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    await startDB('platformDB')
+    await startDB()
     const content = await contents.findOne({ id })
     if (!content) notFound()
 
@@ -50,11 +50,11 @@ export async function DELETE(req: NextRequest, { params: { id } }: { params: { i
     const session = await auth()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    await startDB('platformDB')
+    await startDB()
     const content = await contents.findOne({ id })
     if (!content) notFound()
 
-    if (content.author !== session.id && !session.permissions.includes('admin'))
+    if (content.authorId !== session.id && !session.permissions.includes('admin'))
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
     await contents.deleteOne({ id })

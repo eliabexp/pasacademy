@@ -21,7 +21,7 @@ interface Slider {
 }
 
 export async function GET(req: NextRequest) {
-    await startDB('platformDB')
+    await startDB()
 
     const session = await auth()
 
