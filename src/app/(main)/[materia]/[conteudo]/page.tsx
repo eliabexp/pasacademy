@@ -104,7 +104,7 @@ export default async function Conteudo({ params: { materia, conteudo } }: Conten
                     title={content.title}
                     subtitle={`${content.subjectName} - ${content.level}º ano`}
                 />
-                {content.status !== 'public' && (
+                {!content.public && (
                     <div className="mb-4 rounded-md bg-yellow-200 p-4">
                         <p className="text-sm text-yellow-900">
                             Este conteúdo está em processo de revisão e ainda não foi publicado.
@@ -112,7 +112,7 @@ export default async function Conteudo({ params: { materia, conteudo } }: Conten
                     </div>
                 )}
                 <Body dangerouslySetInnerHTML={{ __html }} />
-                {content.status === 'public' && (
+                {content.public && (
                     <Interactions
                         id={content.id}
                         title={content.title}

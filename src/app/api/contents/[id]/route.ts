@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
     const content = await contents.findOne({ id })
     if (!content) notFound()
 
-    if (content.status === 'draft') {
+    if (!content.public) {
         const allowedPermissions = ['contentModerator', 'admin']
         if (!session || !session.permissions.some((p) => allowedPermissions.includes(p))) notFound()
     }
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params: { id } }: { params: { id
         subject: z.string().optional(),
         level: z.coerce.number().int().min(1).max(3).optional(),
         content: z.string().optional(),
-        status: z.enum(['public', 'draft']).optional()
+        public: z.boolean().optional()
     })
 
     const data = schema.parse(body)

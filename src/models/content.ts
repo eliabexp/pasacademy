@@ -56,7 +56,7 @@ const schema = new Schema({
     authorId: { type: String, required: true },
     thumb: { type: String },
     title: { type: String, maxLength: 96, required: true },
-    status: { type: String, enum: ['draft', 'public'], default: 'draft' },
+    public: { type: Boolean, default: false },
     tags: [{ type: String }],
     content: { type: String, required: true },
     interactions: { type: interactionsSchema, required: true }

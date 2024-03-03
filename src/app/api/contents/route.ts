@@ -13,7 +13,7 @@ interface Query {
     limit?: number
     q?: string
     sort?: 'new' | 'view'
-    status?: 'public' | 'draft' | 'all'
+    public?: boolean
 }
 
 async function getContents(query: Query, multiple: boolean, user: User) {
@@ -43,15 +43,13 @@ async function getContents(query: Query, multiple: boolean, user: User) {
             break
     }
 
-    if (query.status === 'all') query.status = undefined
-
     pipeline.push(
         {
             $match: {
-                ...query.subject && { subject: query.subject },
-                ...query.name && { name: query.name },
-                ...query.level && { level: query.level },
-                ...query.status === 'public' && { $or: [{ status: 'public' }, { authorId: user?.id }] }
+                ...(query.subject && { subject: query.subject }),
+                ...(query.name && { name: query.name }),
+                ...(query.level && { level: query.level }),
+                ...(query.public && { $or: [{ public: query.public }, { authorId: user?.id }] })
             }
         },
         { $limit: query.limit || 10 },
@@ -81,7 +79,7 @@ export async function GET(req: NextRequest) {
         limit: z.coerce.number().int().min(1).max(8).optional(),
         q: z.string().max(48).optional(),
         sort: z.enum(['new', 'view']).optional(),
-        status: z.enum(['public', 'draft', 'all']).default('public')
+        public: z.coerce.boolean().optional()
     })
 
     const parse = schema.safeParse(Object.fromEntries(params.entries()))
@@ -91,10 +89,11 @@ export async function GET(req: NextRequest) {
 
     // Restrict access to unpublished content
     const allowedPermissions = ['contentModerator', 'admin']
-    if (user && user.permissions.some((permission) => allowedPermissions.includes(permission))) {
-        query.status = 'all'
+    if (!query.public) {
+        if (user && user.permissions.some((permission) => allowedPermissions.includes(permission)))
+            query.public = undefined
+        else query.public = true
     }
-    else query.status = 'public'
 
     const data = await getContents(query, multiple, user)
     if (!data) notFound()
@@ -158,23 +157,33 @@ export async function POST(req: NextRequest) {
         if (content) return NextResponse.json({ error: 'Content already exists' }, { status: 409 })
 
         // Create content
-        const newContent = await contents.create({
-            authorId: session.id,
-            title: data.title,
-            subject: data.subject,
-            name: data.title.slice(0, 48).toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, ''),
-            level: data.level,
-            tags: data.tags,
-            content: data.content,
-            exercises: data.exercises
-        }).then((doc) => {
-            const { _id, __v, ...rest } = doc.toObject()
-            return { ...rest }
+        const newContent = await contents
+            .create({
+                authorId: session.id,
+                title: data.title,
+                subject: data.subject,
+                name: data.title
+                    .slice(0, 48)
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[^a-z0-9]/g, ''),
+                level: data.level,
+                tags: data.tags,
+                content: data.content,
+                exercises: data.exercises
+            })
+            .then((doc) => {
+                const { _id, __v, ...rest } = doc.toObject()
+                return { ...rest }
+            })
+
+        if (!newContent)
+            return NextResponse.json({ error: 'Error creating content' }, { status: 500 })
+
+        return NextResponse.json(newContent, {
+            status: 201,
+            headers: { Location: `/${newContent.subject}/${newContent.name}` }
         })
-
-        if (!newContent) return NextResponse.json({ error: 'Error creating content' }, { status: 500 })
-
-        return NextResponse.json(newContent, { status: 201, headers: { Location: `/${newContent.subject}/${newContent.name}` } })
     } catch (err) {
         console.log(err)
         return NextResponse.json({ error: err }, { status: 400 })
