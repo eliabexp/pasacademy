@@ -55,7 +55,7 @@ export default function Search({ subject, placeholder }: SearchProps) {
     }, [query])
 
     return (
-        <div className="relative w-full md:w-3/4 md:max-w-md">
+        <div className="relative w-full md:mx-auto md:w-96">
             <div className="relative size-full">
                 <Input
                     className="pl-9 text-base"

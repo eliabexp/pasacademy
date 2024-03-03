@@ -9,9 +9,7 @@ export default function Header() {
     return (
         <div className="block w-full">
             <h2 className="text-center text-lg font-bold">
-                {createHeader
-                    ? `${createHeader.title} - ${createHeader.level}`
-                    : 'Criar conteúdo'}
+                {createHeader || 'Criar conteúdo'}
             </h2>
         </div>
     )

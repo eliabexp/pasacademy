@@ -6,7 +6,7 @@ import Nav from '@/layouts/Nav'
 import { LoadingTopBar } from '@/components/ui/loading-top-bar'
 
 export const LayoutContext = createContext<{
-    layout: { createHeader?: { title: string; level: string } }
+    layout: { createHeader?: string }
     setLayout?: React.Dispatch<React.SetStateAction<{}>>
 }>({ layout: {} })
 
@@ -16,12 +16,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <LayoutContext.Provider value={{ layout, setLayout }}>
-            <Header page={page} />
-            <div className="relative flex flex-col pb-14 md:flex-row md:pb-0">
+            <div className="mx-auto grid max-w-screen-2xl grid-cols-1 md:grid-cols-[15rem,1fr]">
+                <Header page={page} />
                 <Nav page={page} setPage={setPage} />
-                {children}
+                <div className="min-w-0 pb-14 md:pb-0">{children}</div>
+                <LoadingTopBar />
             </div>
-            <LoadingTopBar />
         </LayoutContext.Provider>
     )
 }

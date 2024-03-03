@@ -85,3 +85,11 @@
         @apply block w-fit rounded-md border bg-hover px-4 py-2 font-[inherit];
     }
 }
+
+@layer utilities {
+    .scrollbar-hidden {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        @apply [&::-webkit-scrollbar]:hidden;
+    }
+}

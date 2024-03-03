@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import AuthProvider from '@/components/providers/AuthProvider'
 import ThemeProvider from '@/components/providers/ThemeProvider'
 import { auth } from '@/lib/auth'
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Uma plataforma completa sobre o PAS UnB.'
 }
 
-export function generateViewport() {
+export function generateViewport(): Viewport {
     const userAgent = headers().get('User-Agent')
 
     // prevent input zoom on focus on iOS devices

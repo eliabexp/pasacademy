@@ -99,7 +99,11 @@ function EditorBubbleMenu({ editor }: { editor: EditorType }) {
         <BubbleMenu
             className="flex items-center gap-1 rounded-lg border bg-background p-1"
             editor={editor}
-            shouldShow={({ editor }) => !editor.isActive('image')}
+            tippyOptions={{ duration: 150 }}
+            shouldShow={({ editor, view, state, from, to }) => {
+                const { doc } = state
+                return doc.textBetween(from, to).length > 0 && !editor.isActive('image')
+            }}
         >
             <ToggleGroup type="multiple">
                 <ToggleGroupItem
@@ -219,7 +223,7 @@ const editorCommandBarClass = tv({
     base: 'sticky bottom-4 mx-auto w-max rounded-lg border bg-background transition-transform',
     variants: {
         focused: {
-            true: '-translate-y-48 md:translate-y-0'
+            true: '-translate-y-40 md:translate-y-0'
         }
     }
 })

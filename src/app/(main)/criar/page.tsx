@@ -26,11 +26,8 @@ export default function Criar() {
     const [options, setOptions] = useState<Options>({})
 
     return (
-        <main className="flex w-full p-4">
-            <Form
-                options={options}
-                setOptions={setOptions}
-            />
+        <main className="flex p-4">
+            <Form options={options} setOptions={setOptions} />
             {options.type === 'content' && (
                 <Content className="grow" options={options} setOptions={setOptions} />
             )}

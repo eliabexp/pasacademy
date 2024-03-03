@@ -176,7 +176,7 @@ export default function CreateForm({ options, setOptions }: FormProps) {
                 setLayout &&
                     setLayout({
                         ...layout,
-                        createHeader: { title: data.title, level: `${data.level}º ano` }
+                        createHeader: `${data.title} - ${data.level}º ano`
                     })
             }}
         >

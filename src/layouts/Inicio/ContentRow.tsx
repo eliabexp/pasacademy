@@ -43,9 +43,9 @@ export default function ContentRow({ row }: ContentRowProps) {
     }, [row])
 
     return (
-        <section className="my-4 w-full">
+        <section className="my-5 w-full">
             <h2 className="mx-4 text-2xl font-bold">{row.name}</h2>
-            <ul className="my-2 flex w-full overflow-y-hidden">
+            <ul className="scrollbar-hidden my-2 flex w-full overflow-y-hidden">
                 {contents.map((content: Content) => (
                     <li className="shrink-0 first:ml-4" key={content.id}>
                         <ContentCard

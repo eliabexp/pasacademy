@@ -98,8 +98,8 @@ export default async function Conteudo({ params: { materia, conteudo } }: Conten
         )
 
     return (
-        <main className="mx-auto p-4">
-            <article>
+        <main className="p-4">
+            <article className="mx-auto max-w-xl">
                 <Title
                     title={content.title}
                     subtitle={`${content.subjectName} - ${content.level}º ano`}

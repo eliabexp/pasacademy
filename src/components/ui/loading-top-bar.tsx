@@ -16,7 +16,7 @@ const LoadingTopBar = () => {
 
     return (
         <progress
-            className="fixed top-0 z-20 h-0.5 w-full appearance-none [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value[value='0']]:transition-none [&::-webkit-progress-value]:bg-foreground [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-500"
+            className="fixed top-0 z-20 h-0.5 w-full appearance-none bg-transparent [&::-moz-progress-bar]:bg-foreground [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value[value='0']]:transition-none [&::-webkit-progress-value]:bg-foreground [&::-webkit-progress-value]:duration-500"
             value={value}
             max="100"
         ></progress>
