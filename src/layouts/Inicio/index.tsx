@@ -1,11 +1,11 @@
-import ContentRow from './ContentRow'
+import RowOfContents from './RowOfContents'
 import Header from './Header'
 import Search from './Search'
 import Slider from './Slider'
 
 export {
-    ContentRow,
     Header,
     Search,
-    Slider
+    Slider,
+    RowOfContents
 }

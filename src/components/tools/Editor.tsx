@@ -2,6 +2,7 @@
 
 import CharacterCount from '@tiptap/extension-character-count'
 import FileHandler from '@tiptap-pro/extension-file-handler'
+import Heading from '@tiptap/extension-heading'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -497,9 +498,7 @@ export function Editor({
         },
         extensions: [
             StarterKit.configure({
-                heading: {
-                    levels: [2, 3]
-                },
+                heading: false,
                 strike: false
             }),
             CharacterCount.configure({
@@ -519,6 +518,11 @@ export function Editor({
                         uploadFile(file, currentEditor as EditorType)
                     })
                 }
+            }),
+            Heading.configure({
+                levels: [2, 3]
+            }).extend({
+                marks: 'italic'
             }),
             Image,
             Link.configure({

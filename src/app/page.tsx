@@ -34,7 +34,7 @@ export default async function Home() {
                             Acessar gratuitamente
                         </Link>
                     </div>
-                    <div className="relative mx-auto md:w-[60%] md:self-end">
+                    <div className="relative mx-auto md:w-3/5 md:self-end">
                         <picture className="block h-full md:h-auto md:w-full">
                             <source
                                 media="(min-width: 768px)"
@@ -60,7 +60,7 @@ export default async function Home() {
                 </section>
                 <section className="px-8 py-16 md:flex md:justify-between md:gap-6">
                     <Image
-                        className="rounded-lg md:w-[50%]"
+                        className="rounded-lg md:w-1/2"
                         src="/assets/images/content.png"
                         alt="Captura da tela de questões"
                         width="720"
@@ -79,7 +79,7 @@ export default async function Home() {
                 </section>
                 <section className="px-8 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
-                        className="rounded-lg md:w-[50%]"
+                        className="rounded-lg md:w-1/2"
                         src="/assets/images/content.png"
                         alt="Captura da tela de conteúdos"
                         width="720"
@@ -98,7 +98,7 @@ export default async function Home() {
                 </section>
                 <section className="px-8 py-16 md:flex md:justify-between md:gap-6">
                     <Image
-                        className="rounded-lg md:w-[50%]"
+                        className="rounded-lg md:w-1/2"
                         src="/assets/images/content.png"
                         alt="Captura da tela de trilhas"
                         width="720"
@@ -121,7 +121,7 @@ export default async function Home() {
                 </section>
                 <section className="px-8 py-16 md:flex md:flex-row-reverse md:justify-between md:gap-6">
                     <Image
-                        className="rounded-lg md:w-[50%]"
+                        className="rounded-lg md:w-1/2"
                         src="/assets/images/content.png"
                         alt="Captura da tela de conteúdos"
                         width="720"

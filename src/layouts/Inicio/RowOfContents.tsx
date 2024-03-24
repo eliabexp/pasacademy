@@ -1,7 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ContentCard } from '@/components/ui/content-card'
+import {
+    ContentRow,
+    ContentRowList,
+    ContentRowTitle,
+    ContentRowCard,
+    ContentRowCardImage,
+    ContentRowCardTitle
+} from '@/components/ui/content-row'
 
 interface Content {
     id: string
@@ -11,7 +18,8 @@ interface Content {
     subject: string
     subjectName: string
 }
-interface ContentRowProps {
+
+interface RowOfContentsProps {
     row: {
         name: string
         subjects?: string[]
@@ -21,9 +29,7 @@ interface ContentRowProps {
     }
 }
 
-export default function ContentRow({ row }: ContentRowProps) {
-    if (!row) return <></>
-
+export default function RowOfContents({ row }: RowOfContentsProps) {
     const [contents, setContents] = useState([])
     useEffect(() => {
         const query: string[] = []
@@ -43,21 +49,19 @@ export default function ContentRow({ row }: ContentRowProps) {
     }, [row])
 
     return (
-        <section className="my-5 w-full">
-            <h2 className="mx-4 text-2xl font-bold">{row.name}</h2>
-            <ul className="scrollbar-hidden my-2 flex w-full overflow-y-hidden">
+        <ContentRow key={row.name}>
+            <ContentRowTitle>{row.name}</ContentRowTitle>
+            <ContentRowList>
                 {contents.map((content: Content) => (
-                    <li className="shrink-0 first:ml-4" key={content.id}>
-                        <ContentCard
-                            title={content.title}
-                            thumb={content.thumb}
-                            name={content.name}
-                            subject={content.subject}
-                            subjectName={content.subjectName}
+                    <ContentRowCard href={`/${content.subject}/${content.name}`} key={content.name}>
+                        <ContentRowCardImage
+                            src={content.thumb}
+                            alt={content.title}
                         />
-                    </li>
+                        <ContentRowCardTitle>{content.title}</ContentRowCardTitle>
+                    </ContentRowCard>
                 ))}
-            </ul>
-        </section>
+            </ContentRowList>
+        </ContentRow>
     )
 }

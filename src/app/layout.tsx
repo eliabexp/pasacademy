@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import AuthProvider from '@/components/providers/AuthProvider'
-import ThemeProvider from '@/components/providers/ThemeProvider'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { inter } from './fonts'
-import { redirect } from 'next/navigation'
+import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
@@ -36,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <html lang="pt-br">
             <body className={inter.className}>
                 <AuthProvider user={session}>
-                    <ThemeProvider>{children}</ThemeProvider>
+                    <ThemeProvider attribute="class">{children}</ThemeProvider>
                 </AuthProvider>
                 <Toaster />
             </body>

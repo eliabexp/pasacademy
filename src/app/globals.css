@@ -89,7 +89,6 @@
 @layer utilities {
     .scrollbar-hidden {
         scrollbar-width: none;
-        -ms-overflow-style: none;
         @apply [&::-webkit-scrollbar]:hidden;
     }
 }

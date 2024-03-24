@@ -16,12 +16,12 @@ interface Query {
     public?: boolean
 }
 
-async function getContents(query: Query, multiple: boolean, user: User) {
+async function getContents(query: Query, multiple: boolean, user: User | null) {
     await startDB()
 
     const pipeline: PipelineStage[] = []
 
-    // Search must be the first stage
+    // Search needs to be the first stage
     if (query.q) {
         pipeline.push({
             $search: {
@@ -49,7 +49,7 @@ async function getContents(query: Query, multiple: boolean, user: User) {
                 ...(query.subject && { subject: query.subject }),
                 ...(query.name && { name: query.name }),
                 ...(query.level && { level: query.level }),
-                ...(query.public && { $or: [{ public: query.public }, { authorId: user?.id }] })
+                ...(query.public && { $or: [{ public: query.public }, { authorId: user ? user.id : null }] })
             }
         },
         { $limit: query.limit || 10 },
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
         limit: z.coerce.number().int().min(1).max(8).optional(),
         q: z.string().max(48).optional(),
         sort: z.enum(['new', 'view']).optional(),
-        public: z.coerce.boolean().optional()
+        public: z.coerce.boolean().default(true).optional()
     })
 
     const parse = schema.safeParse(Object.fromEntries(params.entries()))
@@ -88,11 +88,8 @@ export async function GET(req: NextRequest) {
     const query = parse.data
 
     // Restrict access to unpublished content
-    const allowedPermissions = ['contentModerator', 'admin']
     if (!query.public) {
-        if (user && user.permissions.some((permission) => allowedPermissions.includes(permission)))
-            query.public = undefined
-        else query.public = true
+        if (!user || !user) query.public = true
     }
 
     const data = await getContents(query, multiple, user)

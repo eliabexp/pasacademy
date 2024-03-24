@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import {
     Select,
     SelectContent,
@@ -26,14 +27,13 @@ const formVariants = tv({
     }
 })
 
-type Options = {
-    type?: string
-} | {
+type Options = { type?: string } | {
     type: 'content'
     title: string
     subject: string
     level: number
-} | {
+}
+| {
     type: 'question' | 'roadmap'
     title: string
     subjects: string[]
@@ -45,13 +45,13 @@ interface FormProps {
     setOptions: React.Dispatch<React.SetStateAction<Options>>
 }
 
-function SubjectSelect({ multiple }: { multiple?: boolean }) {
+function SubjectSelect({ multiple, setSubject }: { multiple?: boolean; setSubject: React.Dispatch<React.SetStateAction<string>> }) {
     return (
         <>
             <Label className="mb-2 block" htmlFor="subject">
                 {multiple ? 'Matérias' : 'Matéria'}
             </Label>
-            <Select name="subject" required>
+            <Select name="subject" onValueChange={(value: string) => setSubject(value)} required>
                 <SelectTrigger>
                     <SelectValue placeholder="Selecione uma matéria" />
                 </SelectTrigger>
@@ -91,9 +91,9 @@ function SubjectSelect({ multiple }: { multiple?: boolean }) {
 function LevelSelect() {
     return (
         <>
-            <label className="mb-2 block" htmlFor="level">
+            <Label className="mb-2 block" htmlFor="level">
                 Ano
-            </label>
+            </Label>
             <Select name="level" required>
                 <SelectTrigger>
                     <SelectValue placeholder="Selecione o ano" />
@@ -110,15 +110,35 @@ function LevelSelect() {
 
 export default function CreateForm({ options, setOptions }: FormProps) {
     const [type, setType] = useState('content')
-    const [subject, setSubject] = useState([''])
-    const [subjects, setSubjects] = useState([''])
+    const [subject, setSubject] = useState('')
+    const [hasWorks, setHasWorks] = useState(false)
 
     const { layout, setLayout } = useContext(LayoutContext)
 
     const contentForm = () => (
         <div>
             <div className="mb-8">
-                <SubjectSelect />
+                <SubjectSelect setSubject={setSubject} />
+                {subject === 'obras' && (
+                    <div className="mt-8">
+                        <Label className="mb-2 block" htmlFor="workCategory">
+                            Categoria da obra
+                        </Label>
+                        <Select name="workCategory" required>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecione a categoria da obra" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="texto">Texto</SelectItem>
+                                <SelectItem value="literatura">Literatura</SelectItem>
+                                <SelectItem value="audiovisual">Audiovisual</SelectItem>
+                                <SelectItem value="musica">Música</SelectItem>
+                                <SelectItem value="teatro">Teatro</SelectItem>
+                                <SelectItem value="artesvisuais">Artes visuais</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )}
             </div>
             <div className="mb-8">
                 <Label className="mb-2 block" htmlFor="title">
@@ -141,10 +161,29 @@ export default function CreateForm({ options, setOptions }: FormProps) {
     const questionsForm = () => (
         <div>
             <div className="mb-8">
-                <SubjectSelect multiple />
+                <SubjectSelect setSubject={setSubject} />
             </div>
             <div className="mb-8">
                 <LevelSelect />
+            </div>
+            <div className="mb-8">
+                <Label className="mb-2 block">Obras</Label>
+                <div className="mb-4 flex items-center gap-2">
+                    <Switch
+                        id="obras"
+                        name="obras"
+                        checked={hasWorks}
+                        onCheckedChange={(checked: boolean) =>
+                            checked ? setHasWorks(true) : setHasWorks(false)
+                        }
+                    />
+                    <Label>Esse conteúdo é relacionado a uma obra?</Label>
+                </div>
+                {hasWorks && (
+                    <div>
+                        <Input placeholder="Digite o nome da obra" />
+                    </div>
+                )}
             </div>
         </div>
     )
@@ -157,7 +196,7 @@ export default function CreateForm({ options, setOptions }: FormProps) {
                 <Input type="text" name="title" id="title" />
             </div>
             <div className="mb-8">
-                <SubjectSelect multiple />
+                <SubjectSelect setSubject={setSubject} multiple />
             </div>
             <div className="mb-8">
                 <LevelSelect />

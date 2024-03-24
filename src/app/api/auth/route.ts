@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createTransport } from 'nodemailer'
-import { cookies } from 'next/headers'
 import { render } from '@react-email/render'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
@@ -9,7 +8,7 @@ import startDB from '@/lib/mongoose'
 import sessions from '@/models/session'
 import tokens from '@/models/token'
 import users from '@/models/user'
-import { auth } from '@/lib/auth'
+import { auth, createSession } from '@/lib/auth'
 
 const FacebookOAuth = async (code: string) => {
     const accessToken = await fetch(
@@ -94,23 +93,10 @@ export async function GET(req: NextRequest) {
     const userData = await users.findOne({ email: user.email })
 
     // Create session
-    await startDB('authDB')
-    const newSession = await sessions.create({
-        token: `${userData ? '' : 't'}${crypto.randomUUID()}`, // temporary tokens start with 't'
+    await createSession({
         userId: userData ? userData.id : user.email,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
-        ...(provider && { provider })
-    })
-
-    const isInDevEnvironment = process.env.NODE_ENV === 'development' // disable https only cookies in dev environment
-
-    cookies().set({
-        sameSite: 'lax',
-        httpOnly: true,
-        secure: isInDevEnvironment ? false : true,
-        name: `${isInDevEnvironment ? '' : '__Host-'}token`,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
-        value: newSession.token
+        temporary: userData ? false : true,
+        provider
     })
 
     redirect('/login')

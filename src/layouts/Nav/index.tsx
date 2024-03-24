@@ -48,7 +48,7 @@ export default function Nav({ page, setPage }: NavProps) {
             url: 'criar',
             icon: <Plus />,
             iconActive: <Plus />,
-            hide: !user || !user.permissions.some((p) => ['admin', 'createContent'].includes(p))
+            hide: !user || !user
         }
     ]
 
@@ -60,7 +60,7 @@ export default function Nav({ page, setPage }: NavProps) {
     }, [pathName])
 
     return (
-        <nav className="fixed bottom-0 z-10 flex h-14 w-full items-center bg-background md:static md:h-full md:min-h-[calc(100svh-4rem)] md:w-60 md:flex-col md:gap-1 md:px-2 md:py-8 print:hidden">
+        <nav className="fixed bottom-0 z-10 flex h-14 w-full items-center bg-background md:static md:top-16 md:h-full md:min-h-[calc(100svh-4rem)] md:w-60 md:flex-col md:gap-1 md:px-2 md:py-8 print:hidden">
             <Menu links={links} page={page} />
         </nav>
     )

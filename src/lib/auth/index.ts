@@ -3,14 +3,7 @@ import { cookies } from 'next/headers'
 import sessions from '@/models/session'
 import startDB from '@/lib/mongoose'
 
-export function getSessionToken() {
-    const token = cookies().get(`${process.env.NODE_ENV === 'development' ? '' : '__Host-'}token`)
-    if (!token) return
-
-    return token.value
-}
-
-export type User = {
+export interface User {
     id: string
     email: string
     name: string
@@ -18,9 +11,49 @@ export type User = {
     pronoun: 'o' | 'a' | 'o(a)'
     level: number
     avatar?: string | null
-    role: string
-    permissions: string[]
-} | null
+    teacher: boolean
+    roles: string[]
+}
+
+interface createSessionOptions {
+    userId: string
+    provider?: string
+    expiresAt?: Date
+    temporary?: boolean
+}
+
+export async function createSession({ userId, provider, expiresAt, temporary }: createSessionOptions) {
+    await startDB('authDB')
+
+    const token = crypto.randomUUID()
+
+    const newSession = await sessions.create({
+        token: `${temporary ? '' : 't'}${token}`, // temporary tokens start with 't'
+        userId: userId,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+        ...(provider && { provider })
+    })
+
+    const isInDevEnvironment = process.env.NODE_ENV === 'development' // disable https only cookies in dev environment
+
+    cookies().set({
+        sameSite: 'lax',
+        httpOnly: true,
+        secure: isInDevEnvironment ? false : true,
+        name: `${isInDevEnvironment ? '' : '__Host-'}token`,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+        value: newSession.token
+    })
+
+    return token
+}
+
+export function getSessionToken() {
+    const token = cookies().get(`${process.env.NODE_ENV === 'development' ? '' : '__Host-'}token`)
+    if (!token) return
+
+    return token.value
+}
 
 export async function auth() {
     const token = getSessionToken()
@@ -51,7 +84,7 @@ export async function auth() {
         pronoun: pronouns[user.profile.gender],
         level: user.profile.level,
         avatar: user.profile.avatar,
-        role: user.profile.role,
-        permissions: user.account.permissions
+        teacher: user.profile.teacher,
+        roles: user.account.roles
     }
 }

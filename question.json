@@ -1,0 +1,26 @@
+{
+    "subject": "obras",
+    "hasWorks": true,
+    "works": ["A desobediência civil - Henry David Thoreau", "Cota não é esmola - Bia Ferreira"],
+    "level": 2,
+    "year": 2023,
+    "difficulty": 1,
+    "institution": "PAS UnB",
+    "type": "trueOrFalse",
+    "content": "Na obra **A desobediência civil**, Henry David Thoreau critica a ideia de que a escravidão deva ser considerada justa apenas por ter fundamentação jurídica, questionando, dessa forma, a obediência incondicional à lei, inclusive quando ela sustenta e fomenta comportamentos inumanos, injustos ou discriminatórios. Por sua vez, na canção **Cota não é esmola**, Bia Ferreira defende as cotas raciais na universidade e denuncia o racismo e a discriminação, especialmente em relação às mulheres negras e periféricas.",
+    "instruction": "Tendo como referência o conteúdo das obras anteriormente citadas, julgue os seguintes itens.",
+    "questions": [
+        {
+            "content": "A ação afirmativa implantada nas universidades federais brasileiras sob o formato da reserva de vagas — também conhecida como cotas — fere a igualdade de direitos, visto que favorece uma parte da população em detrimento de outras.",
+            "isCorrect": false
+        },
+        {
+            "content": "Enquanto a obra **A desobediência civil**, de Henry David Thoreau, enfoca a crítica à escravidão e à obediência cega à lei, a canção **Cota não é esmola**, de Bia Ferreira, trata principalmente da luta pela igualdade de gênero e não aborda questões relacionadas à injustiça social.",
+            "isCorrect": true
+        },
+        {
+            "content": "Atualmente, constatam-se os efeitos da ampliação, promovida pela Lei de Cotas, do acesso de pessoas negras à educação superior, os quais ultrapassam a mera diversificação dos corpos, afetando, também, as agendas de pesquisa.",
+            "isCorrect": true
+        }
+    ]
+}

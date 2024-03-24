@@ -48,26 +48,25 @@ const interactionsSchema = new Schema({
 
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
-    subjects: [{ type: String, enum: Object.keys(subjectsId), required: true }],
+    subject: { type: String, enum: Object.keys(subjectsId), required: true },
+    hasWorks: { type: Boolean, required: true },
+    works: [{ type: String }],
     level: { type: Number, required: true },
     year: { type: Number, required: true },
     difficulty: { type: Number, min: 1, max: 3 },
     institution: { type: String, required: true },
-    type: { type: String, enum: ['singleChoice', 'multipleChoice', 'numeric'], required: true },
+    type: { type: String, enum: ['trueOrFalse', 'multipleChoice', 'numeric'], required: true },
     tags: [{ type: String }],
     content: { type: String },
-    image: { type: String },
     instruction: { type: String },
     questions: [
         {
-            content: String,
-            image: String,
+            content: { type: String, required: true },
+            isCorrect: Boolean,
             alternatives: [
                 {
-                    text: { type: String, required: true },
-                    isCorrect: { type: Boolean, required: true },
-                    image: { type: String },
-                    explanation: { type: String }
+                    content: { type: String, required: true },
+                    isCorrect: { type: Boolean, required: true }
                 }
             ],
             interactions: {
@@ -88,7 +87,7 @@ const schema = new Schema({
             }
         }
     ],
-    interactions: interactionsSchema
+    interactions: { type: interactionsSchema, required: true }
 }).pre('validate', async function (this: any, next) {
     if (this.isNew) {
         // Generate question id

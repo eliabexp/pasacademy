@@ -1,4 +1,4 @@
-import { ContentRow, Slider } from '@/layouts/Inicio'
+import { Slider, RowOfContents } from '@/layouts/Inicio'
 import { type Topic } from '@/models/topic'
 
 export default async function Inicio() {
@@ -12,7 +12,7 @@ export default async function Inicio() {
             {topics.rows.map((row: Topic) => {
                 switch (row.type) {
                     case 'contentRow':
-                        return <ContentRow key={row.name} row={row} />
+                        return <RowOfContents key={row.name} row={row} />
                     default:
                         return <></>
                 }

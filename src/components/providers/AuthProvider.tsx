@@ -1,25 +1,14 @@
 'use client'
 
 import { createContext } from 'react'
+import type { User } from '@/lib/auth'
 
 interface AuthProviderProps {
-    user: User
+    user: User | null
     children: React.ReactNode
 }
 
-type User = {
-    id: string
-    email: string
-    name: string
-    username: string
-    pronoun: string
-    avatar?: string | null
-    level: number
-    role: string
-    permissions: string[]
-} | false | null
-
-export const AuthContext = createContext<User>(null)
+export const AuthContext = createContext<User | null>(null)
 
 export default function AuthProvider({ user, children }: AuthProviderProps) {
     return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>

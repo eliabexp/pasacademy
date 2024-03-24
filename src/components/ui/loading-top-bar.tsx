@@ -1,17 +1,25 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 const LoadingTopBar = () => {
     const [value, setValue] = useState('0')
     const pathname = usePathname()
+    const previousPathname = useRef(pathname)
+
+    // disable loading bar between these paths
+    const mainPaths = ['/inicio', '/obras', '/comunidade', '/questoes', '/perfil']
 
     useEffect(() => {
+        if (mainPaths.includes(pathname) && mainPaths.includes(previousPathname.current)) return
+
         setValue('100')
         setTimeout(() => {
             setValue('0')
         }, 600)
+
+        previousPathname.current = pathname
     }, [pathname])
 
     return (
