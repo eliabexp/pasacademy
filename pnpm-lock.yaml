@@ -67,7 +67,7 @@ dependencies:
     version: 2.7.5(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)
   '@tiptap-pro/extension-mathematics':
     specifier: ^2.7.5
-    version: 2.7.5(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)(katex@0.16.9)
+    version: 2.7.5(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)(katex@0.16.10)
   '@tiptap/extension-bubble-menu':
     specifier: ^2.2.2
     version: 2.2.4(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)
@@ -117,8 +117,8 @@ dependencies:
     specifier: ^2.1.0
     version: 2.1.0
   katex:
-    specifier: ^0.16.9
-    version: 0.16.9
+    specifier: ^0.16.10
+    version: 0.16.10
   lucide-react:
     specifier: ^0.363.0
     version: 0.363.0(react@18.2.0)
@@ -127,7 +127,7 @@ dependencies:
     version: 12.0.1
   marked-katex-extension:
     specifier: ^5.0.1
-    version: 5.0.1(katex@0.16.9)(marked@12.0.1)
+    version: 5.0.1(katex@0.16.10)(marked@12.0.1)
   mongoose:
     specifier: ^8.2.3
     version: 8.2.3
@@ -2577,7 +2577,7 @@ packages:
       '@tiptap/pm': 2.2.4
     dev: false
 
-  /@tiptap-pro/extension-mathematics@2.7.5(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)(katex@0.16.9):
+  /@tiptap-pro/extension-mathematics@2.7.5(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)(katex@0.16.10):
     resolution: {integrity: sha512-AQ0yxDco87zuPxn2Zz/WtH57bCcaPKd0oDqdPu9Wq81m+64yTR8d3m5qvBj5be0zsB8eQivW9KfzByqdlc/cNA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
@@ -2586,7 +2586,7 @@ packages:
     dependencies:
       '@tiptap/core': 2.2.4(@tiptap/pm@2.2.4)
       '@tiptap/pm': 2.2.4
-      katex: 0.16.9
+      katex: 0.16.10
     dev: false
 
   /@tiptap/core@2.2.4(@tiptap/pm@2.2.4):
@@ -5529,8 +5529,8 @@ packages:
     engines: {node: '>=12.0.0'}
     dev: false
 
-  /katex@0.16.9:
-    resolution: {integrity: sha512-fsSYjWS0EEOwvy81j3vRA8TEAhQhKiqO+FQaKWp0m39qwOzHVBgAUBIXWj1pB+O2W3fIpNa6Y9KSKCVbfPhyAQ==}
+  /katex@0.16.10:
+    resolution: {integrity: sha512-ZiqaC04tp2O5utMsl2TEZTXxa6WSC4yo0fv5ML++D3QZv/vx2Mct0mTlRx3O+uUkjfuAgOkzsCmq5MiUEsDDdA==}
     hasBin: true
     dependencies:
       commander: 8.3.0
@@ -5688,14 +5688,14 @@ packages:
       uc.micro: 2.1.0
     dev: false
 
-  /marked-katex-extension@5.0.1(katex@0.16.9)(marked@12.0.1):
+  /marked-katex-extension@5.0.1(katex@0.16.10)(marked@12.0.1):
     resolution: {integrity: sha512-4HYoazLdDpzaEcjKSo334lM4tS38lySWXXwctiN2Bo4Pw3sfuhF0CSiUf92GCGSZiVeTB3diulCGGFdhlKz1zQ==}
     peerDependencies:
       katex: '>=0.16 <0.17'
       marked: '>=4 <13'
     dependencies:
       '@types/katex': 0.16.7
-      katex: 0.16.9
+      katex: 0.16.10
       marked: 12.0.1
     dev: false
 
