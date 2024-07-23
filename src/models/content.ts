@@ -49,15 +49,16 @@ const interactionsSchema = new Schema({
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, lowercase: true, required: true, index: true },
-    subject: { type: String, enum: Object.keys(subjectsId), required: true },
-    subjectName: { type: String, required: true },
-    level: { type: Number, min: 1, max: 3, required: true },
-    createdAt: { type: Date, default: Date.now() },
-    authorId: { type: String, required: true },
-    thumb: { type: String },
     title: { type: String, maxLength: 96, required: true },
+    relations: {
+        subject: { type: String, enum: Object.keys(subjectsId), required: true },
+        level: { type: Number, min: 1, max: 3, required: true },
+        createdAt: { type: Date, default: Date.now() },
+        authorId: { type: String, required: true },
+        tags: [{ type: String }],
+        thumb: { type: String },
+    },
     public: { type: Boolean, default: false },
-    tags: [{ type: String }],
     content: { type: String, required: true },
     interactions: { type: interactionsSchema, required: true }
 }).pre('validate', async function (this: any, next) {
@@ -72,25 +73,6 @@ const schema = new Schema({
                 String(Math.floor(Math.random() * 100000)).padStart(5, '0')
         } while (await this.constructor.findOne({ id: this.id }))
     }
-
-    // Generate subject name
-    const subjectNames: { [key: string]: string } = {
-        portugues: 'Português',
-        geografia: 'Geografia',
-        historia: 'História',
-        sociologia: 'Sociologia',
-        filosofia: 'Filosofia',
-        artes: 'Artes',
-        ingles: 'Inglês',
-        espanhol: 'Espanhol',
-        literatura: 'Literatura',
-        matematica: 'Matemática',
-        fisica: 'Física',
-        quimica: 'Quimica',
-        biologia: 'Biologia',
-        obras: 'Obra do PAS'
-    }
-    this.subjectName = subjectNames[this.subject]
 
     next()
 })

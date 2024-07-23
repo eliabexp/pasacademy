@@ -1,5 +1,4 @@
 import Logo from '@/components/ui/logo'
-import { Header as ComunidadeHeader } from '@/layouts/Comunidade'
 import { Header as CriarHeader } from '@/layouts/Criar'
 import { Header as InicioHeader } from '@/layouts/Inicio'
 import { Header as ObrasHeader } from '@/layouts/Obras'
@@ -13,7 +12,6 @@ export default function Header({ page }: { page: string }) {
         obras: <ObrasHeader />,
         questoes: <QuestoesHeader />,
         perfil: <PerfilHeader />,
-        comunidade: <ComunidadeHeader />,
         criar: <CriarHeader />
     }
 

@@ -48,17 +48,17 @@ const interactionsSchema = new Schema({
 
 const schema = new Schema({
     id: { type: String, required: true, unique: true },
-    subject: { type: String, enum: Object.keys(subjectsId), required: true },
-    hasWorks: { type: Boolean, required: true },
-    works: [{ type: String }],
-    level: { type: Number, required: true },
-    year: { type: Number, required: true },
-    difficulty: { type: Number, min: 1, max: 3 },
-    institution: { type: String, required: true },
-    type: { type: String, enum: ['trueOrFalse', 'multipleChoice', 'numeric'], required: true },
-    tags: [{ type: String }],
+    relations: {
+        subject: { type: String, enum: Object.keys(subjectsId), required: true },
+        works: [{ type: String }],
+        level: { type: Number, required: true },
+        year: { type: Number, required: true },
+        difficulty: { type: Number, min: 1, max: 3 },
+        institution: { type: String, required: true },
+        type: { type: String, enum: ['trueOrFalse', 'multipleChoice', 'numeric'], required: true },
+        tags: [{ type: String }],
+    },
     content: { type: String },
-    instruction: { type: String },
     questions: [
         {
             content: { type: String, required: true },

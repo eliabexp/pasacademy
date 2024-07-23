@@ -1,8 +1,9 @@
 import Image, { getImageProps } from 'next/image'
+import { auth } from '@/lib/auth'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import Logo from '@/components/ui/logo'
 import Script from 'next/script'
-import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function Home() {
@@ -27,12 +28,12 @@ export default async function Home() {
                             No PAS Academy você tem acesso completo a um material didático criado
                             para otimizar suas preciosas horas de estudo. Tudo de graça!
                         </p>
-                        <Link
-                            href="/inicio"
-                            className="inline-block rounded-2xl bg-white px-8 py-4 text-xl font-medium text-black transition-colors duration-300 hover:bg-white/80"
+                        <Button
+                            className="rounded-2xl bg-white px-8 py-7 text-xl font-medium text-black"
+                            asChild
                         >
-                            Acessar gratuitamente
-                        </Link>
+                            <Link href="/inicio">Acessar gratuitamente</Link>
+                        </Button>
                     </div>
                     <div className="relative mx-auto md:w-3/5 md:self-end">
                         <picture className="block h-full md:h-auto md:w-full">

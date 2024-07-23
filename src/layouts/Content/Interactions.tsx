@@ -52,7 +52,7 @@ export default function Interactions({ id, title, likeCount, liked, saved }: Int
     }
 
     return (
-        <div className="flex justify-between rounded-md border p-4">
+        <div className="flex justify-between rounded-md border p-4 print:hidden">
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>

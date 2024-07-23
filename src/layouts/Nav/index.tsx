@@ -1,4 +1,4 @@
-import { Home, LibraryBig, ListTodo, Plus, Route, User, Users } from 'lucide-react'
+import { Home, LibraryBig, ListTodo, Plus, Route, User } from 'lucide-react'
 import Menu from './Menu'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
@@ -24,12 +24,6 @@ export default function Nav({ page, setPage }: NavProps) {
             url: 'obras',
             icon: <LibraryBig />,
             iconActive: <LibraryBig fill="currentColor" />
-        },
-        {
-            name: 'Comunidade',
-            url: 'comunidade',
-            icon: <Users />,
-            iconActive: <Users fill="currentColor" />
         },
         {
             name: 'Questões',

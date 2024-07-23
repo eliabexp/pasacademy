@@ -9,7 +9,7 @@ const LoadingTopBar = () => {
     const previousPathname = useRef(pathname)
 
     // disable loading bar between these paths
-    const mainPaths = ['/inicio', '/obras', '/comunidade', '/questoes', '/perfil']
+    const mainPaths = ['/inicio', '/obras', '/questoes', '/perfil']
 
     useEffect(() => {
         if (mainPaths.includes(pathname) && mainPaths.includes(previousPathname.current)) return

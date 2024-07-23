@@ -1,4 +1,4 @@
-import { Editor } from '@/components/tools/Editor'
+import { Editor } from '@/components/editor/Editor'
 import {
     AlertDialog,
     AlertDialogAction,

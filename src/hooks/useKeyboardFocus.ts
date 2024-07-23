@@ -23,4 +23,4 @@ const useKeyboardFocus = (minKeyboardHeight: number = 300, defaultValue?: boolea
     return isKeyboardOpen
 }
 
-export default useKeyboardFocus
+export { useKeyboardFocus }
